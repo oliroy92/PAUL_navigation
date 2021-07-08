@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<robot name="beam" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Constant for beam base -->
+  <xacro:property name="mass" value="1.0" />
+
+  <!-- Included files -->
+  <xacro:include filename="$(find beam_description)/urdf/Realsense_D455/realsense_d455.urdf.xacro" />
+
+  <!-- BASE FOOTPRINT -->
+  <!-- base_footprint is a fictitious link(frame) that is on the ground right below base_link origin -->
+  <link name="base_footprint">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size ="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+  </link>
+
+  <!-- BASE_LINK (only static pieces) -->
+  <link name="base_link">
+    <inertial>
+      <origin xyz="0.01336 0.0 0.07595" rpy="0.0 0.0 0.0"/>
+      <mass value="9.0"/>
+      <inertia 
+        ixx="0" ixy="0" ixz="0" 
+        iyy="0" iyz="0" 
+        izz="0" />
+    </inertial>
+
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="1.5708 0.0 3.14159"/>
+      <geometry>
+        <mesh filename="package://beam_description/meshes/paul.dae"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://beam_description/meshes/STL/beam_base.STL" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+
+  </link>
+
+  <joint name="footprintBase" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 ${Left_wheel_radius - Left_wheel_pose_z}" rpy="0 0 0"/>
+  </joint>
+
+  <!-- IMU -->
+  <link name="imu_link"/>
+
+  <!-- LiDAR -->
+  <link name="lidar_link"/>
+
+  <!-- Cameras -->
+  <link name="rgb1_link"/>
+  <link name="rgb2_link"/>
+
+  <!-- Robot arm -->
+  <link name="arm_j1_link"/>
+  <link name="arm_j2_link"/>
+  <link name="arm_j3_link"/>
+
+  <joint name="baseArm_j1" type="fixed">
+    <parent link="base_link"/>
+    <child link="arm_j1_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <joint name="arm_j1_j2" type="revolute">
+    <parent link="arm_j1_link"/>
+    <child link="arm_j2_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <joint name="arm_j1_j2" type="revolute">
+    <parent link="arm_j1_link"/>
+    <child link="arm_j2_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <joint name="arm_j2_j3" type="prismatic">
+    <parent link="arm_j2_link"/>
+    <child link="arm_j3_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Realsense D455 Camera --> 
+  <xacro:realsense_d455_sensor parent="head_link" name="realsense" >
+    <origin xyz="${Realsense_pose_x} ${Realsense_pose_y} ${Realsense_pose_z}" rpy="${Realsense_rotation_x} ${Realsense_rotation_y} ${Realsense_rotation_z}"/>
+  </xacro:realsense_d455_sensor>
+
+  <!-- Wheels -->
+  <xacro:wheel fb="F" lr="R" parent="base_link" wheelRadius="${Right_wheel_radius}" wheelLength="${Right_wheel_thickness}" wheelMass="${mass/2}" posX="${Right_wheel_pose_x}" posY="${Right_wheel_pose_y}" posZ="${Right_wheel_pose_z}" flipY="1"/>
+  <xacro:wheel fb="F" lr="L" parent="base_link" wheelRadius="${Left_wheel_radius}" wheelLength="${Left_wheel_thickness}" wheelMass="${mass/2}" posX="${Left_wheel_pose_x}" posY="${Left_wheel_pose_y}" posZ="${Left_wheel_pose_z}" flipY="1"/>
+
+</robot>
