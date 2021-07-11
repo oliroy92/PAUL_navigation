@@ -1,0 +1,20 @@
+<launch>
+  <arg name="robot_name"    default="/"/>
+  <arg name="joystick_port" default="js1"/> 
+
+  <!--Launching joystick node to listen to joystick-->
+  <node pkg="joy" type="joy_node" name="joy" >
+    <param name="autorepeat_rate" value="10" />
+    <param name="dev"             value="/dev/input/$(arg joystick_port)" />
+    <remap from="$(arg robot_name)/cmd_vel" to="/cmd_vel"/>
+  </node>
+
+  <!--Launching teleop_joystick.py which is going to treat joystick commands-->
+  <node pkg="control" name="teleop_joy" type="teleop_joystick.py" output="screen">
+    <param name="enable_button"         type="int"    value="5"/>
+    <param name="scale_linear"          type="double" value="1.0"/>
+    <param name="scale_angular"         type="double" value="2.0"/>
+    <param name="axis_linear"           type="int"    value="3"/>
+    <param name="axis_angular"          type="int"    value="2"/>
+  </node> 
+</launch>
