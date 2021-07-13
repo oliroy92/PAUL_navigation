@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<robot name="wheel" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:property name="PI" value="3.1415926535897931"/>
+  <xacro:property name="PI_2" value="1.570796327" />
+  <xacro:property name="DEG_TO_RAD" value="0.017453293" />
+  
+  <xacro:macro name="cylinder_inertia" params="m r l">
+    <inertia  ixx="${m*(3*r*r+l*l)/12}" ixy = "0" ixz = "0"
+              iyy="${m*(3*r*r+l*l)/12}" iyz = "0"
+              izz="${m*r*r/2}" /> 
+  </xacro:macro>
+  
+  <!--fb : Front/Back => F/B ; lr: Left/Right => L/R -->
+  <xacro:macro name="wheel" params="fb lr parent wheelRadius wheelLength wheelMass posX posY posZ flipY"> 
+    <link name="wheel${fb}${lr}_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="${flipY*PI/2} 0  0 " /> 
+        <geometry>
+          <cylinder length="${wheelLength}" radius="${wheelRadius}" />
+        </geometry>
+        <material name="black" />
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="${flipY*PI/2} 0 0 " />
+        <geometry>
+          <cylinder length="${wheelLength}" radius="${wheelRadius}" />
+        </geometry>
+
+        <surface>
+          <friction>
+            <ode>
+              <mu>10.0</mu>
+              <mu2>10.0</mu2>
+            </ode>
+          </friction>
+          <contact>
+            <ode>
+              <min_depth>0.1</min_depth>
+            </ode>
+          </contact>
+        </surface>
+      </collision>
+      <inertial>
+        <mass value="${wheelMass}" />
+        <origin xyz="0 0 0" />
+        <xacro:cylinder_inertia  m="${wheelMass}" r="${wheelRadius}" l="${wheelLength}" />
+      </inertial>
+    </link>
+
+    <gazebo reference="wheel${fb}${lr}_link">
+      <mu1 value="1.0"/>
+      <mu2 value="1.0"/>
+      <kp  value="10000000.0" />
+      <kd  value="1.0" />
+      <fdir1 value="1 0 0"/>
+      <material>Gazebo/Grey</material>
+      <turnGravityOff>false</turnGravityOff>
+    </gazebo>
+
+    <joint name="wheel${fb}${lr}_joint" type="continuous">
+      <parent link="${parent}"/>
+      <child link="wheel${fb}${lr}_link"/>
+      <origin xyz="${posX} ${posY} ${posZ}" rpy="0 0 0" /> 
+      <axis xyz="0 1 0" rpy="0  0" />
+      <limit effort="100" velocity="100"/>
+      <joint_properties damping="0.0" friction="0.0"/>
+    </joint>
+
+    <!-- Transmission is important to link the joints and the controller -->
+    <transmission name="$wheel${fb}${lr}_joint_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="$wheel${fb}${lr}_joint" />
+      <actuator name="$wheel${fb}${lr}_joint_motor">
+        <hardwareInterface>EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+   
+  </xacro:macro>
+</robot>
