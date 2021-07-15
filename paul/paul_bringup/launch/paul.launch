@@ -1,0 +1,42 @@
+<launch>
+
+	<!-- Loading arguments -->
+    <arg name="simulation"          default="false"/>
+    <arg name="rviz"                default="true"/>
+    <arg name="rviz_config_file"    default="rviz_cfg.rviz"/>
+    <arg name="rviz_cfg"            default="-d $(find paul_bringup)/config/$(arg rviz_config_file)"/>
+    <arg name="robot_name"          default="paul"/>
+
+    <!-- Launch RVIZ -->
+    <node if="$(arg rviz)" name="rviz" pkg="rviz" type="rviz" args="$(arg rviz_cfg)"/>
+
+    <group if="$(arg simulation)">
+
+         <!-- Initiate an empty world in Gazebo -->
+         <include file="$(find gazebo_ros)/launch/empty_world.launch">
+            <arg name="world_name"          value="$(find simulation)/worlds/empty.world"/>
+            <arg name="debug"               value="false"/>
+            <arg name="gui"                 value="true"/>
+            <arg name="paused"              value="false"/>
+            <arg name="use_sim_time"        value="true"/>
+            <arg name="headless"            value="false"/>
+        </include> 
+
+        <!-- Spawn paul into Gazebo -->
+        <node name="$(arg robot_name)_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
+            args="
+                -x 1.0 
+                -y 0.0 
+                -z 0.2 
+                -urdf 
+                -param robot_description 
+                -model $(arg robot_name) ">
+        </node>
+
+    </group>
+
+    <param name="robot_description" command="xacro '$(find paul_description)/urdf/paul.urdf.xacro'"/>
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+
+</launch>
