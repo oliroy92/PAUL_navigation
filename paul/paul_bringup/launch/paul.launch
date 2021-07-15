@@ -14,7 +14,7 @@
 
          <!-- Initiate an empty world in Gazebo -->
          <include file="$(find gazebo_ros)/launch/empty_world.launch">
-            <arg name="world_name"          value="$(find simulation)/worlds/empty.world"/>
+            <arg name="world_name"          value="$(find paul_gazebo)/worlds/grocery.world"/>
             <arg name="debug"               value="false"/>
             <arg name="gui"                 value="true"/>
             <arg name="paused"              value="false"/>
@@ -25,9 +25,9 @@
         <!-- Spawn paul into Gazebo -->
         <node name="$(arg robot_name)_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
             args="
-                -x 1.0 
+                -x 0.0 
                 -y 0.0 
-                -z 0.2 
+                -z 1.0 
                 -urdf 
                 -param robot_description 
                 -model $(arg robot_name) ">

@@ -6,63 +6,56 @@
   <xacro:property name="base_width" 		value="0.64135" />
   <xacro:property name="base_height"		value="0.85027" /> <!-- Without wheels -->
   <xacro:property name="base_length"		value="1.1303" />
-  <xacro:property name="base_pose_z"		value="${base_height/2}" />
+  <xacro:property name="base_pose_z"		value="${ground_to_base_z}" />
+  <xacro:property name="wheel_to_base_z" 	value="0.08827" />
+  <xacro:property name="ground_to_base_z"	value="${wheel_to_base_z + wheel_radius}" />
 
   <!-- Constant for driven wheels -->
     <!-- Common parameters -->
-  <xacro:property name="Wheel_radius"		value="0.08"/>
-  <xacro:property name="Wheel_thickness"	value="0.055"/>
-  <xacro:property name="Wheel_offset_from_base" value="0.08827" />
+  <xacro:property name="wheel_diameter"		value="0.14732" />
+  <xacro:property name="wheel_radius"		value="${wheel_diameter/2}"/>
+  <xacro:property name="wheel_thickness"	value="0.055"/>
+  <xacro:property name="front_to_rear_wheels_x"	value="0.84056"/>
+  <xacro:property name="front_right_left_y"	value="0.3302"/>
+  <xacro:property name="rear_right_left_y"	value="0.5715"/>
 
     <!-- Right wheel parameters -->
-  <xacro:property name="Wheel_R_pose_x"		value="0.115"/>
-  <xacro:property name="Wheel_R_pose_y"		value="${- 0.088 - (Right_wheel_thickness/2)}"/> 
-  <xacro:property name="Wheel_R_pose_z"		value=" 0.045"/>
-  <xacro:property name="Wheel_R_rot_x"   	value="0.0000"/>
-  <xacro:property name="Wheel_R_rot_y"   	value="1.5707"/>
-  <xacro:property name="Wheel_R_rot_z"   	value="1.5707"/>
+  <xacro:property name="wheel_R_pose_x"		value="${-front_to_rear_wheels_x/2}"/>
+  <xacro:property name="wheel_R_pose_y"		value="${-rear_right_left_y/2}"/> 
+  <xacro:property name="wheel_R_pose_z"		value="${-wheel_radius}"/>
+  <xacro:property name="wheel_R_rot_x"   	value="0.0000"/>
+  <xacro:property name="wheel_R_rot_y"   	value="0.0000"/>
+  <xacro:property name="wheel_R_rot_z"   	value="0.0000"/>
 
     <!-- Left wheel parameters -->
-  <xacro:property name="Wheel_L_pose_x"		value=" ${Right_wheel_pose_x}"/>
-  <xacro:property name="Wheel_L_pose_y"		value="${-Right_wheel_pose_y}"/>
-  <xacro:property name="Wheel_L_pose_z"		value=" ${Right_wheel_pose_z}"/>
-  <xacro:property name="Wheel_L_rot_x"		value=" ${Right_wheel_rotation_x}"/>
-  <xacro:property name="Wheel_L_rot_y"		value=" ${Rigth_wheel_rotation_y}"/>
-  <xacro:property name="Wheel_L_rot_z"		value=" ${Right_wheel_rotation_z}"/>
+  <xacro:property name="wheel_L_pose_x"		value=" ${wheel_R_pose_x}"/>
+  <xacro:property name="wheel_L_pose_y"		value="${-wheel_R_pose_y}"/>
+  <xacro:property name="wheel_L_pose_z"		value=" ${wheel_R_pose_z}"/>
+  <xacro:property name="wheel_L_rot_x"		value=" ${wheel_R_rot_x}"/>
+  <xacro:property name="wheel_L_rot_y"		value=" ${wheel_R_rot_y}"/>
+  <xacro:property name="wheel_L_rot_z"		value=" ${wheel_R_rot_z}"/>
 
   <!-- Included files -->
   <xacro:include filename="$(find paul_description)/urdf/wheel.urdf.xacro" /> 
 
   <!-- BASE FOOTPRINT -->
   <!-- base_footprint is a fictitious link(frame) that is on the ground right below base_link origin -->
-  <link name="base_footprint">
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <box size ="0.001 0.001 0.001" />
-      </geometry>
-    </visual>
-  </link>
+  <link name="base_footprint"/>
 
   <!-- BASE_LINK (only static pieces) -->
   <link name="base_link">
     <inertial>
-      <origin xyz="0.01336 0.0 0.07595" rpy="0.0 0.0 0.0"/>
-      <mass value="9.0"/>
-      <inertia 
-        ixx="0" ixy="0" ixz="0" 
-        iyy="0" iyz="0" 
-        izz="0" />
+      <mass value="1" />
+      <inertia  ixx="0.001" ixy="0.0"  ixz="0.0"  
+                iyy="0.001"  iyz="0.0"  
+                izz="0.001" /> 
     </inertial>
 
     <visual>
-      <origin xyz="0.0 0.0 ${base_pose_z}" rpy="0.0 0.0 0.0"/>
+      <origin xyz="0.0 0.0 ${-ground_to_base_z}" rpy="0.0 0.0 0.0"/>
       <geometry>
-        <box size ="${base_length} ${base_width} ${base_height}" />
+        <mesh filename="package://paul_description/meshes/shopping-cart-without-wheels.stl"/>
       </geometry>
-      <!--geometry>
-        <mesh filename="package://paul_description/meshes/shopping-cart-without-rear-wheels.stl"/>
-      </geometry-->
       <material name="black"/>
     </visual>
 
@@ -78,7 +71,7 @@
   <joint name="footprintBase" type="fixed">
     <parent link="base_footprint"/>
     <child link="base_link"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <origin xyz="0.0 0.0 ${ground_to_base_z}" rpy="0 0 0"/>
   </joint>
 
   <!-- IMU -->
@@ -144,7 +137,7 @@
     <origin xyz="${Realsense_pose_x} ${Realsense_pose_y} ${Realsense_pose_z}" rpy="${Realsense_rotation_x} ${Realsense_rotation_y} ${Realsense_rotation_z}"/>
   </xacro:realsense_d455_sensor-->
 
-  <!-- Wheels --><!--
+  <!-- wheels --><!--
   <xacro:wheel fb="F" lr="R" parent="base_link" wheelRadius="${Right_wheel_radius}" wheelLength="${Right_wheel_thickness}" wheelMass="${mass/2}" posX="${Right_wheel_pose_x}" posY="${Right_wheel_pose_y}" posZ="${Right_wheel_pose_z}" flipY="1"/>
   <xacro:wheel fb="F" lr="L" parent="base_link" wheelRadius="${Left_wheel_radius}" wheelLength="${Left_wheel_thickness}" wheelMass="${mass/2}" posX="${Left_wheel_pose_x}" posY="${Left_wheel_pose_y}" posZ="${Left_wheel_pose_z}" flipY="1"/-->
 
