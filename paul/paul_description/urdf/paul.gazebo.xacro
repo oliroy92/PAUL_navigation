@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<robot name="paul" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <gazebo reference="base_footprint">
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+
+  <gazebo reference="base_link">
+    <material>Gazebo/White</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo> 
+
+  <gazebo>
+    <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+
+      <rosDebugLevel>na</rosDebugLevel>
+      <publishWheelTF>false</publishWheelTF>
+      <robotNamespace>/</robotNamespace>
+      <publishTf>1</publishTf>
+      <publishWheelJointState>false</publishWheelJointState>
+      <alwaysOn>true</alwaysOn>
+      <updateRate>100.0</updateRate>
+      <leftJoint>wheel_R_joint</leftJoint>
+      <rightJoint>wheel_L_joint</rightJoint>
+      <wheelSeparation>${wheel_R_pose_y*2}</wheelSeparation>
+      <wheelDiameter>${2*wheel_radius}</wheelDiameter>
+      <broadcastTF>1</broadcastTF>
+      <wheelTorque>30</wheelTorque>
+      <wheelAcceleration>1.8</wheelAcceleration>
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryFrame>odom</odometryFrame> 
+      <odometryTopic>odom</odometryTopic> 
+      <robotBaseFrame>base_footprint</robotBaseFrame>
+
+    </plugin>
+
+  </gazebo> 
+
+
+</robot>
