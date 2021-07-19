@@ -11,9 +11,9 @@
               izz="${m*r*r/2}" /> 
   </xacro:macro>
   
-  <!--fb : Front/Back => F/B ; lr: Left/Right => L/R -->
-  <xacro:macro name="wheel" params="fb lr parent wheelRadius wheelLength wheelMass posX posY posZ flipY"> 
-    <link name="wheel${fb}${lr}_link">
+  <!-- lr: Left/Right => L/R -->
+  <xacro:macro name="wheel" params="lr parent wheelRadius wheelLength wheelMass posX posY posZ flipY"> 
+    <link name="wheel_${lr}_link">
       <visual>
         <origin xyz="0 0 0" rpy="${flipY*PI/2} 0  0 " /> 
         <geometry>
@@ -48,7 +48,7 @@
       </inertial>
     </link>
 
-    <gazebo reference="wheel${fb}${lr}_link">
+    <gazebo reference="wheel_${lr}_link">
       <mu1 value="1.0"/>
       <mu2 value="1.0"/>
       <kp  value="10000000.0" />
@@ -58,9 +58,9 @@
       <turnGravityOff>false</turnGravityOff>
     </gazebo>
 
-    <joint name="wheel${fb}${lr}_joint" type="continuous">
+    <joint name="wheel_${lr}_joint" type="continuous">
       <parent link="${parent}"/>
-      <child link="wheel${fb}${lr}_link"/>
+      <child link="wheel_${lr}_link"/>
       <origin xyz="${posX} ${posY} ${posZ}" rpy="0 0 0" /> 
       <axis xyz="0 1 0" rpy="0  0" />
       <limit effort="100" velocity="100"/>
@@ -68,10 +68,10 @@
     </joint>
 
     <!-- Transmission is important to link the joints and the controller -->
-    <transmission name="$wheel${fb}${lr}_joint_trans">
+    <transmission name="$wheel_${lr}_joint_trans">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="$wheel${fb}${lr}_joint" />
-      <actuator name="$wheel${fb}${lr}_joint_motor">
+      <joint name="$wheel_${lr}_joint" />
+      <actuator name="$wheel_${lr}_joint_motor">
         <hardwareInterface>EffortJointInterface</hardwareInterface>
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>

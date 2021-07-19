@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<robot name="caster" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:property name="PI" value="3.1415926535897931"/>
+  <xacro:property name="PI_2" value="1.570796327" />
+  <xacro:property name="DEG_TO_RAD" value="0.017453293" />
+  
+  <xacro:macro name="sphere_inertia" params="m r">
+    <inertia  ixx="${(2*m*r*r)/5}" ixy = "0" ixz = "0"
+              iyy="${(2*m*r*r)/5}" iyz = "0"
+              izz="${(2*m*r*r)/5}" /> 
+  </xacro:macro>
+  
+  <!-- lr: Left/Right => L/R -->
+  <xacro:macro name="caster" params="lr parent casterRadius casterMass posX posY posZ flipY"> 
+    <link name="caster_${lr}_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="${flipY*PI/2} 0  0 " /> 
+        <geometry>
+          <sphere radius="${casterRadius}" />
+        </geometry>
+        <material name="grey" />
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="${flipY*PI/2} 0 0 " />
+        <geometry>
+          <sphere radius="${casterRadius}" />
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.0001</mu>
+              <mu2>0.0001</mu2>
+            </ode>
+          </friction>
+          <contact>
+            <ode>
+              <min_depth>0.1</min_depth>
+            </ode>
+          </contact>
+        </surface>
+      </collision>
+
+      <inertial>
+        <mass value="${casterMass}" />
+        <origin xyz="0 0 0" />
+        <xacro:sphere_inertia  m="${casterMass}" r="${casterRadius}" />
+      </inertial>
+    </link>
+
+    <gazebo reference="caster_${lr}_link">
+      <mu1> 0.0 </mu1>
+      <mu2> 0.0 </mu2>
+      <material>Gazebo/Grey</material>
+      <turnGravityOff>false</turnGravityOff>
+    </gazebo>
+
+    <!--Joint definition-->
+    <joint name="caster_${lr}_joint" type="continuous">
+      <parent link="${parent}"/>
+      <child link="caster_${lr}_link"/>
+      <axis xyz="0 0 1"/>
+      <origin xyz="${posX} ${posY} ${posZ}" rpy="0 0 0" /> 
+    </joint>
+   
+  </xacro:macro>
+</robot>
