@@ -58,6 +58,7 @@
   <xacro:include filename="$(find paul_description)/urdf/wheel.urdf.xacro" />
   <xacro:include filename="$(find paul_description)/urdf/caster.urdf.xacro" />
   <xacro:include filename="$(find paul_description)/urdf/paul.gazebo.xacro" />
+  <xacro:include filename="$(find paul_description)/urdf/lidar.urdf.xacro" />
 
   <!-- BASE FOOTPRINT -->
   <!-- base_footprint is a fictitious link(frame) that is on the ground right below base_link origin -->
@@ -66,24 +67,28 @@
   <!-- BASE_LINK (only static pieces) -->
   <link name="base_link">
     <inertial>
-      <mass value="1" />
-      <inertia  ixx="0.001" ixy="0.0"  ixz="0.0"  
-                iyy="0.001"  iyz="0.0"  
-                izz="0.001" /> 
+      <mass value="24.265" />
+      <!-- Position of center of mass -->
+      <origin xyz="-0.176 0.0 0.203" rpy="0 0 0" />
+      <!-- Moment of inertia around center of mass -->
+      <inertia  ixx="3.681" ixy="0.0"  ixz="-0.168"  
+                iyy="4.665"  iyz="0.0"  
+                izz="3.867" /> 
     </inertial>
 
     <visual>
-      <origin xyz="0.0 0.0 ${-ground_to_base_z}" rpy="0.0 0.0 0.0"/>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
       <geometry>
         <mesh filename="package://paul_description/meshes/shopping-cart-without-wheels.stl"/>
       </geometry>
-      <material name="black"/>
+      <material name="white"/>
     </visual>
 
     <collision>
-      <origin xyz="0.0 0.0 ${base_height}" rpy="0.0 0.0 0.0"/>
+      <origin xyz="0.0 0.0 ${base_height/2}" rpy="0.0 0.0 0.0"/>
       <geometry>
-        <box size ="${base_length} ${base_width} ${base_height}" />
+        <!--box size ="${base_length} ${base_width} ${base_height}" /-->
+        <mesh filename="package://paul_description/meshes/shopping-cart-without-wheels.stl"/>
       </geometry>
     </collision>
 
@@ -104,23 +109,22 @@
     <origin xyz="0 0 0" rpy="0 0 0"/>
   </joint>
 
-  <!-- LiDAR -->
-  <link name="lidar_link"/>
-
-  <joint name="baseLidar" type="fixed">
-    <parent link="base_link"/>
-    <child link="lidar_link"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
-  </joint>
-
   <!-- Cameras -->
-  <link name="rgb1_link"/>
+  <link name="rgb1_link" >
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <box size ="0.03 0.03 0.03" />
+      </geometry>
+      <material name="black"/>
+    </visual>
+  </link>
   <link name="rgb2_link"/>
 
   <joint name="baseRGB1" type="fixed">
     <parent link="base_link"/>
     <child link="rgb1_link"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <origin xyz="0.592 0.0 0.532" rpy="0 0 0"/>
   </joint>
 
   <joint name="baseRGB2" type="fixed">
@@ -141,5 +145,9 @@
     <!-- Left caster wheel: "caster_L_link" and "caster_L_joint" -->
   <xacro:caster lr="L" parent="base_link" casterRadius="${wheel_radius}" casterMass="${wheel_mass}" posX="${caster_L_pose_x}" posY="${caster_L_pose_y}" posZ="${caster_L_pose_z}" flipY="1"/>
   
+  <!-- Lidar sensor -->
+  <xacro:lidar parent="base_link">
+    <origin xyz="0.50614 0 0.1" rpy="0 0 0" />
+  </xacro:lidar>
 
 </robot>
