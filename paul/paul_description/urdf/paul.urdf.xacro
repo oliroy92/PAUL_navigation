@@ -66,14 +66,17 @@
   <!-- BASE_LINK (only static pieces) -->
   <link name="base_link">
     <inertial>
-      <mass value="1" />
-      <inertia  ixx="0.001" ixy="0.0"  ixz="0.0"  
-                iyy="0.001"  iyz="0.0"  
-                izz="0.001" /> 
+      <mass value="24.265" />
+      <!-- Position of center of mass -->
+      <origin xyz="-0.176 0.0 0.203" rpy="0 0 0" />
+      <!-- Moment of inertia around center of mass -->
+      <inertia  ixx="3.681" ixy="0.0"  ixz="-0.168"  
+                iyy="4.665"  iyz="0.0"  
+                izz="3.867" /> 
     </inertial>
 
     <visual>
-      <origin xyz="0.0 0.0 ${-ground_to_base_z}" rpy="0.0 0.0 0.0"/>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
       <geometry>
         <mesh filename="package://paul_description/meshes/shopping-cart-without-wheels.stl"/>
       </geometry>
@@ -81,7 +84,7 @@
     </visual>
 
     <collision>
-      <origin xyz="0.0 0.0 ${base_height}" rpy="0.0 0.0 0.0"/>
+      <origin xyz="0.0 0.0 ${base_height/2}" rpy="0.0 0.0 0.0"/>
       <geometry>
         <box size ="${base_length} ${base_width} ${base_height}" />
       </geometry>
