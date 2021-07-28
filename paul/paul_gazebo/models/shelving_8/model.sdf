@@ -1,6 +1,6 @@
 <?xml version='1.0'?>
 <sdf version="1.4">
-  <model name="gondola">
+  <model name="shelving_8">
     <static>true</static>
     <link name="link">
       <inertial>
@@ -18,14 +18,14 @@
       <collision name="collision">
         <geometry>
           <mesh> 
-              <uri>model://shelving_4/meshes/shelving_4.stl</uri>
+              <uri>model://shelving_8/meshes/shelving_8.stl</uri>
           </mesh>
         </geometry>
       </collision>
       <visual name="visual">
         <geometry>
           <mesh> 
-              <uri>model://shelving_4/meshes/shelving_4.stl</uri>
+              <uri>model://shelving_8/meshes/shelving_8.stl</uri>
           </mesh>
         </geometry>
       </visual>

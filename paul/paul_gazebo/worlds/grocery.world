@@ -9,8 +9,91 @@
     <include>
       <uri>model://ground_plane</uri>
     </include>
+
+    <!-- First row -->
     <include>
-      <uri>model://shelving_4</uri>
+      <uri>model://8x_shelving_4</uri>
+      <pose>3 0 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://8x_shelving_4</uri>
+      <pose>10 -2.5 0 0 0 3.1416</pose>
+    </include>
+    <!-- Second row -->
+    <include>
+      <uri>model://8x_shelving_4</uri>
+      <pose>3 -3 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://8x_shelving_4</uri>
+      <pose>10 -5.5 0 0 0 3.1416</pose>
+    </include>
+
+    <!-- Third row -->
+    <include>
+      <uri>model://8x_shelving_4</uri>
+      <pose>10 0.5 0 0 0 3.1416</pose>
+    </include>
+    <include>
+      <uri>model://8x_shelving_4</uri>
+      <pose>3 3 0 0 0 0</pose>
+    </include>
+
+    <!-- Fourth row -->
+    <include>
+      <uri>model://8x_shelving_4</uri>
+      <pose>3 -6 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://8x_shelving_4</uri>
+      <pose>10 -8.5 0 0 0 3.1416</pose>
+    </include>
+
+    <!-- Walls -->
+    <!-- Y Direction -->
+    <include>
+      <uri>model://grey_wall</uri>
+      <pose>-2 0 0 0 0 1.5708</pose>
+    </include>
+    <!-- Walls -->
+    <include>
+      <uri>model://grey_wall</uri>
+      <pose>-2 7.5 0 0 0 1.5708</pose>
+    </include>
+    <include>
+      <uri>model://grey_wall</uri>
+      <pose>-2 -7.5 0 0 0 1.5708</pose>
+    </include>
+    <!-- X direction -->
+    <include>
+      <uri>model://grey_wall</uri>
+      <pose>1.75 -11.25 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://grey_wall</uri>
+      <pose>9.25 -11.25 0 0 0 0</pose>
+    </include>
+    <!-- Y Direction -->
+    <include>
+      <uri>model://grey_wall</uri>
+      <pose>13 0 0 0 0 1.5708</pose>
+    </include>
+    <include>
+      <uri>model://grey_wall</uri>
+      <pose>13 7.5 0 0 0 1.5708</pose>
+    </include>
+    <include>
+      <uri>model://grey_wall</uri>
+      <pose>13 -7.5 0 0 0 1.5708</pose>
+    </include>
+    <!-- X direction -->
+    <include>
+      <uri>model://grey_wall</uri>
+      <pose>1.75 11.25 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://grey_wall</uri>
+      <pose>9.25 11.25 0 0 0 0</pose>
     </include>
   </world>
 </sdf>
