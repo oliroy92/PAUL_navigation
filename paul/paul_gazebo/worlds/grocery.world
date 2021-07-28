@@ -9,5 +9,8 @@
     <include>
       <uri>model://ground_plane</uri>
     </include>
+    <include>
+      <uri>model://shelving_4</uri>
+    </include>
   </world>
 </sdf>
