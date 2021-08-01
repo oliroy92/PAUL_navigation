@@ -6,6 +6,8 @@
     <arg name="rviz_config_file"    default="rviz_cfg.rviz"/>
     <arg name="rviz_cfg"            default="-d $(find paul_bringup)/config/$(arg rviz_config_file)"/>
     <arg name="robot_name"          default="paul"/>
+    <arg name="rtabmapviz"          default="false"/>
+    <arg name="localization"        default="false"/>
 
     <!-- Launch RVIZ -->
     <node if="$(arg rviz)" name="rviz" pkg="rviz" type="rviz" args="$(arg rviz_cfg)"/>
@@ -41,5 +43,10 @@
 
     <!-- Launching move_base to move robot around -->
     <include file="$(find navigation)/launch/move_base.launch"/>
+
+    <include file="$(find slam)/launch/rtabmap.launch">
+        <arg name="rtabmapviz"              value="$(arg rtabmapviz)"/>
+        <arg name="localization"            value="$(arg localization)"/>
+    </include>
 
 </launch>
