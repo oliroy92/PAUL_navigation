@@ -1,52 +1,56 @@
+<?xml version="1.0" ?>
 <launch>
-
 	<!-- Loading arguments -->
-    <arg name="simulation"          default="false"/>
-    <arg name="rviz"                default="true"/>
-    <arg name="rviz_config_file"    default="rviz_cfg.rviz"/>
-    <arg name="rviz_cfg"            default="-d $(find paul_bringup)/config/$(arg rviz_config_file)"/>
-    <arg name="robot_name"          default="paul"/>
-    <arg name="rtabmapviz"          default="false"/>
-    <arg name="localization"        default="false"/>
+    <arg name="robot_name" default="paul"/>
+    <arg name="simulation" default="false"/>
+    <arg name="gazebo_gui" default="true"/>
+    <arg name="rviz" default="true"/>
+    <arg name="rviz_config_file" default="rviz_cfg.rviz"/>
+
+    <arg name="with_d435" default="true"/>
+    
+    <arg name="rtabmapviz" default="false"/>
+    <arg name="localization" default="false"/>
+
+    <arg name="with_rtabmap" default="false"/>
 
     <!-- Launch RVIZ -->
-    <node if="$(arg rviz)" name="rviz" pkg="rviz" type="rviz" args="$(arg rviz_cfg)"/>
+    <node if="$(arg rviz)" name="rviz" pkg="rviz" type="rviz" args="-d $(find paul_bringup)/config/$(arg rviz_config_file)"/>
 
+    <!-- Launch simulation environment -->
     <group if="$(arg simulation)">
-
-         <!-- Initiate an empty world in Gazebo -->
-         <include file="$(find gazebo_ros)/launch/empty_world.launch">
-            <arg name="world_name"          value="$(find paul_gazebo)/worlds/grocery.world"/>
-            <arg name="debug"               value="false"/>
-            <arg name="gui"                 value="true"/>
-            <arg name="paused"              value="false"/>
-            <arg name="use_sim_time"        value="true"/>
-            <arg name="headless"            value="false"/>
-        </include> 
-
-        <!-- Spawn paul into Gazebo -->
-        <node name="$(arg robot_name)_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
-            args="
-                -x 0.0 
-                -y 0.0 
-                -z 1.0 
-                -urdf 
-                -param robot_description 
-                -model $(arg robot_name) ">
-        </node>
-
+        <include file="$(find paul_gazebo)/launch/simulation.launch">
+            <arg name="gui" value="$(arg gazebo_gui)"/>
+            <arg name="robot_name" value="$(arg robot_name)"/>
+        </include>
     </group>
 
-    <param name="robot_description" command="xacro '$(find paul_description)/urdf/paul.urdf.xacro'"/>
-    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+    <!-- Launch sensors on real robot -->
+    <group unless="$(arg simulation)">
+        <!-- d435 camera -->
+        <group if="$(arg with_d435)">
+            <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+                <arg name="filters" value="pointcloud"/>
+                <arg name="align_depth" value="true"/>
+            </include>
+        </group>
+    </group>
 
+    <!-- Load robot description and state publishers -->
+    <include file="$(find paul_description)/launch/upload.launch">
+
+    <!-- TODO: add move_base and rtabmap in navigation package -->
     <!-- Launching move_base to move robot around -->
-    <include file="$(find navigation)/launch/move_base.launch"/>
+    <group if="$(arg with_rtabmap)">
+        <include file="$(find navigation)/launch/move_base.launch"/>
+    </group>
 
-    <include file="$(find slam)/launch/rtabmap.launch">
-        <arg name="rtabmapviz"              value="$(arg rtabmapviz)"/>
-        <arg name="localization"            value="$(arg localization)"/>
-    </include>
+    <!-- RTABMap -->
+    <group if="$(arg with_rtabmap)">
+        <include file="$(find slam)/launch/rtabmap.launch">
+            <arg name="rtabmapviz" value="$(arg rtabmapviz)"/>
+            <arg name="localization" value="$(arg localization)"/>
+        </include>
+    </group>    
 
 </launch>

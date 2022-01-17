@@ -1,5 +1,11 @@
 <?xml version="1.0"?>
 <robot name="paul" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <!-- Need argument to get from launch file:
+  based on https://answers.ros.org/question/379014/passing-outside-parameters-into-urdf-file-using-xacro/ -->
+  <xacro:arg name="simulation" default="true"/> 
+
+  <!-- Need seperate property for xacro inorder processing -->
+  <xacro:property name="simulation" value="$(arg simulation)"/> 
 
   <!-- Constant for paul base -->
   <xacro:property name="mass" 			value="20.0" />
@@ -67,7 +73,7 @@
   <xacro:include filename="$(find paul_description)/urdf/paul.gazebo.xacro" />
   <xacro:include filename="$(find paul_description)/urdf/lidar.urdf.xacro" />
 
-  <xacro:include filename="$(find paul_description)/urdf/realsense_d415.urdf.xacro"/>
+  <xacro:include filename="$(find paul_description)/urdf/d435/_d435.urdf.xacro"/>
 
   <!-- BASE FOOTPRINT -->
   <!-- base_footprint is a fictitious link(frame) that is on the ground right below base_link origin -->
@@ -159,9 +165,9 @@
     <origin xyz="0.50614 0 0.1" rpy="0 0 0" />
   </xacro:lidar>
 
-  <!-- RGB-D Sensor -->
-  <xacro:realsense_d415_sensor parent="base_link" name="realsense" >
+  <!-- D435 RGB-D Sensor -->
+  <xacro:sensor_d435 parent="base_link" use_nominal_extrinsics="${simulation}">
     <origin xyz="${realsense_pose_x} ${realsense_pose_y} ${realsense_pose_z}" rpy="${realsense_rot_x} ${realsense_rot_y} ${realsense_rot_z}"/>
-  </xacro:realsense_d415_sensor>
+  </xacro:sensor_d435>
 
 </robot>
