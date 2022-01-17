@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<launch>
+    <arg name="simulation" default="false"/>
+
+    <!-- Launch RVIZ -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find paul_bringup)/config/rviz_cfg.rviz"/>
+
+    <!-- Load robot URDF and publish states -->
+    <param name="robot_description" command="xacro '$(find paul_description)/urdf/paul.urdf.xacro' "/>
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+
+</launch>
