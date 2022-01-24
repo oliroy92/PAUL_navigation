@@ -38,6 +38,7 @@ Par la suite, vous pouvez procéder à la création et à la compilation de votr
     cd ros_kortex
     git checkout melodic-devel
     cd ..
+    rosdep install --from-paths src --ignore-src -y
     sudo python3 -m pip install conan
     conan config set general.revisions_enabled=1
     conan profile new default --detect > /dev/null

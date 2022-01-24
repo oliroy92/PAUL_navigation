@@ -149,11 +149,20 @@
     <origin xyz="0 0 0" rpy="0 0 0"/>
   </joint>
 
+  <!-- Arm linear axis -->
+  <link name="linearAxis_link" />
+  <joint name="linearAxis" type="prismatic">
+    <limit effort="1000.0" lower="0" upper="1" velocity="0.5"/>
+    <parent link="base_link"/>
+    <child link="linearAxis_link"/>
+    <origin xyz="-0.6 0.0 0.0" rpy="0 -1.5708 0"/>
+  </joint>
+
   <!-- Arm -->
   <joint name="baseArm" type="fixed">
-    <parent link="base_link"/>
+    <parent link="linearAxis_link"/>
     <child link="gen3_lite_base_link"/>
-    <origin xyz="-0.6 0.0 0.5" rpy="0 0 0"/>
+    <origin xyz="0.0 0.0 0.0" rpy="0 1.5708 0"/>
   </joint>
 
   <!-- driven wheels -->
