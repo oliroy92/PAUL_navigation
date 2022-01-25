@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <world name="grocery_store">
+    <!-- A global light source -->
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    <!-- A ground plane -->
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+
+    <!-- Shelving population -->
+    <population name="shelves">
+      <model name="shelving_4">
+        <include>
+          <uri>model://shelving_4</uri>
+        </include>
+      </model>
+      <pose>0 0 0 0 0 0</pose>
+      <distribution>
+        <type>grid</type>
+        <rows>2</rows> <!-- number of alleys -->
+        <cols>8</cols> <!-- side by side--> 
+        <step>1 4 0</step>
+      </distribution>
+    </population>
+
+  </world>
+</sdf>

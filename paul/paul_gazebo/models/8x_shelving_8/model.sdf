@@ -1,6 +1,6 @@
 <?xml version='1.0'?>
 <sdf version="1.6">
-  <model name="shelving_8">
+  <model name="8x_shelving_8">
     <static>true</static>
 
     <link name="base">
@@ -8,14 +8,14 @@
       <collision name="collision">
         <geometry>
           <box>
-            <size>1 0.5 0.10</size>
+            <size>8 0.5 0.10</size>
           </box>
         </geometry>
       </collision>
       <visual name="visual">
         <geometry>
           <box>
-            <size>1 0.5 0.10</size>
+            <size>8 0.5 0.10</size>
           </box>
         </geometry>
         <material>
@@ -33,14 +33,14 @@
       <collision name="collision">
         <geometry>
           <box>
-            <size>1 0.05 2</size>
+            <size>8 0.05 2</size>
           </box>
         </geometry>
       </collision>
       <visual name="visual">
         <geometry>
           <box>
-            <size>1 0.05 2</size>
+            <size>8 0.05 2</size>
           </box>
         </geometry>
         <material>
@@ -58,14 +58,14 @@
       <collision name="collision">
         <geometry>
           <box>
-            <size>1 0.5 0.05</size>
+            <size>8 0.5 0.05</size>
           </box>
         </geometry>
       </collision>
       <visual name="visual">
         <geometry>
           <box>
-            <size>1 0.5 0.05</size>
+            <size>8 0.5 0.05</size>
           </box>
         </geometry>
         <material>
@@ -83,14 +83,14 @@
       <collision name="collision">
         <geometry>
           <box>
-            <size>1 0.5 0.05</size>
+            <size>8 0.5 0.05</size>
           </box>
         </geometry>
       </collision>
       <visual name="visual">
         <geometry>
           <box>
-            <size>1 0.5 0.05</size>
+            <size>8 0.5 0.05</size>
           </box>
         </geometry>
         <material>
@@ -108,14 +108,14 @@
       <collision name="collision">
         <geometry>
           <box>
-            <size>1 0.5 0.05</size>
+            <size>8 0.5 0.05</size>
           </box>
         </geometry>
       </collision>
       <visual name="visual">
         <geometry>
           <box>
-            <size>1 0.5 0.05</size>
+            <size>8 0.5 0.05</size>
           </box>
         </geometry>
         <material>
@@ -133,14 +133,14 @@
       <collision name="collision">
         <geometry>
           <box>
-            <size>1 0.5 0.05</size>
+            <size>8 0.5 0.05</size>
           </box>
         </geometry>
       </collision>
       <visual name="visual">
         <geometry>
           <box>
-            <size>1 0.5 0.05</size>
+            <size>8 0.5 0.05</size>
           </box>
         </geometry>
         <material>
@@ -158,14 +158,14 @@
       <collision name="collision">
         <geometry>
           <box>
-            <size>1 0.5 0.05</size>
+            <size>8 0.5 0.05</size>
           </box>
         </geometry>
       </collision>
       <visual name="visual">
         <geometry>
           <box>
-            <size>1 0.5 0.05</size>
+            <size>8 0.5 0.05</size>
           </box>
         </geometry>
         <material>
@@ -183,14 +183,14 @@
       <collision name="collision">
         <geometry>
           <box>
-            <size>1 0.5 0.05</size>
+            <size>8 0.5 0.05</size>
           </box>
         </geometry>
       </collision>
       <visual name="visual">
         <geometry>
           <box>
-            <size>1 0.5 0.05</size>
+            <size>8 0.5 0.05</size>
           </box>
         </geometry>
         <material>
