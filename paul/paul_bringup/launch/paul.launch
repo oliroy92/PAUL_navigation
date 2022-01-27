@@ -53,5 +53,5 @@
             <arg name="rtabmapviz" value="$(arg rtabmapviz)"/>
             <arg name="localization" value="$(arg localization)"/>
         </include>
-    </group>    
+    </group>
 </launch>
