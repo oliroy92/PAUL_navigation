@@ -1,7 +1,8 @@
 <?xml version="1.0" ?>
+<launch>
+    <arg name="simulation" default="false"/>
     <!-- Load robot URDF and publish states -->
     <param name="robot_description" command="xacro '$(find paul_description)/urdf/paul.urdf.xacro' simulation:=$(arg simulation)"/>
     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
-
 </launch>

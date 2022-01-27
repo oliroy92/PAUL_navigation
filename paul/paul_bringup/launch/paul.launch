@@ -38,6 +38,8 @@
 
     <!-- Load robot description and state publishers -->
     <include file="$(find paul_description)/launch/upload.launch">
+        <arg name="simulation" value="$(arg simulation)"/>
+    </include>
 
     <!-- TODO: add move_base and rtabmap in navigation package -->
     <!-- Launching move_base to move robot around -->
@@ -52,5 +54,4 @@
             <arg name="localization" value="$(arg localization)"/>
         </include>
     </group>    
-
 </launch>
