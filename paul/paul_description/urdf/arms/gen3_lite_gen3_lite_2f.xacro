@@ -1,7 +1,4 @@
 <?xml version="1.0"?>
-<!-- Modified version of gen3_lite_gen3_lite_2f.xacro from kortex_description -->
-<!-- Olivier Roy - 2022-01-17 -->
-<!-- PMC-Paul -->
 
 <robot name="gen3_lite_gen3_lite_2f" xmlns:xacro="http://ros.org/wiki/xacro">
 
@@ -15,7 +12,7 @@
     <xacro:arg name="gripper" default="gen3_lite_2f" />
 
     <xacro:arg name="sim" default="false" />
-    <xacro:arg name="prefix" default="gen3_lite_" />
+    <xacro:arg name="prefix" default="$(arg arm)_$(arg gripper)_" />
 
     <xacro:include filename="$(find kortex_description)/robots/kortex_robot.xacro" />
     <xacro:load_robot arm="$(arg arm)" gripper="$(arg gripper)" dof="$(arg dof)" vision="false" sim="$(arg sim)"  prefix="$(arg prefix)" />
