@@ -1,13 +1,18 @@
 <?xml version="1.0" ?>
 <launch>
     <arg name="simulation" default="false"/>
+    <!-- Kinova arm parameters -->
+    <arg name="arm"        default="gen3_lite"/>
+    <arg name="gripper"    default="gen3_lite_2f"/>
 
     <!-- Launch RVIZ -->
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find paul_bringup)/config/rviz_cfg.rviz"/>
 
-    <!-- Load robot URDF and publish states -->
-    <param name="robot_description" command="xacro '$(find paul_description)/urdf/paul.urdf.xacro' "/>
-    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
-
+    <!-- Load robot description and state publishers -->
+    <include file="$(find paul_description)/launch/upload.launch">
+        <arg name="simulation" value="$(arg simulation)"/>
+        <arg name="arm"        value="$(arg arm)"/>
+        <arg name="gripper"    value="$(arg gripper)"/>
+        <arg name="use_gui"    value="true"/>
+    </include>
 </launch>

@@ -6,6 +6,8 @@
     <arg name="gazebo_gui" default="true"/>
     <arg name="rviz" default="true"/>
     <arg name="rviz_config_file" default="rviz_cfg.rviz"/>
+    <arg name="arm"        default="gen3_lite"/>
+    <arg name="gripper"    default="gen3_lite_2f"/>
 
     <arg name="with_d435" default="true"/>
     
@@ -39,6 +41,8 @@
     <!-- Load robot description and state publishers -->
     <include file="$(find paul_description)/launch/upload.launch">
         <arg name="simulation" value="$(arg simulation)"/>
+        <arg name="arm"        value="$(arg arm)"/>
+        <arg name="gripper"    value="$(arg gripper)"/>
     </include>
 
     <!-- TODO: add move_base and rtabmap in navigation package -->

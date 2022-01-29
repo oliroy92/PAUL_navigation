@@ -44,8 +44,17 @@ Par la suite, vous pouvez procéder à la création et à la compilation de votr
     conan profile new default --detect > /dev/null
     conan profile update settings.compiler.libcxx=libstdc++11 default
     ```
+    
+5. Installation du plugin du lidar et configuration USB:
+    ```bash
+    git clone https://github.com/Slamtec/rplidar_ros.git
+    cd rplidar_ros
+    KERNEL=="ttyUSB*", MODE="0666"
+    ./scripts/create_udev_rules.sh
+    cd ..
+    ```
 
-5. Compilation des packages:
+6. Compilation des packages:
 
     ```bash
     cd ..
