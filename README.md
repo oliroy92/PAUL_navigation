@@ -25,13 +25,27 @@ Par la suite, vous pouvez procéder à la création et à la compilation de votr
     git clone https://github.com/pmc-paul/paul_ros.git
     ```
 
-3. Installation du plugin de la Realsense D435 pour la simulation:
+3. Téléchargement du plugin de la Realsense D435 pour la simulation:
 
     ```bash
     git clone https://github.com/pal-robotics/realsense_gazebo_plugin.git
     ```
 
-4. Installation du plugin du lidar et configuration USB:
+4. Téléchargement et configuration de ros_kortex pour contrôler le bras Kinova:
+
+    ```bash
+    git clone https://github.com/Kinovarobotics/ros_kortex.git
+    cd ros_kortex
+    git checkout melodic-devel
+    cd ..
+    rosdep install --from-paths src --ignore-src -y
+    sudo python3 -m pip install conan
+    conan config set general.revisions_enabled=1
+    conan profile new default --detect > /dev/null
+    conan profile update settings.compiler.libcxx=libstdc++11 default
+    ```
+    
+5. Installation du plugin du lidar et configuration USB:
     ```bash
     git clone https://github.com/Slamtec/rplidar_ros.git
     cd rplidar_ros
@@ -40,7 +54,7 @@ Par la suite, vous pouvez procéder à la création et à la compilation de votr
     cd ..
     ```
 
-5. Compilation des packages:
+6. Compilation des packages:
 
     ```bash
     cd ..

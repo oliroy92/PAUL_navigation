@@ -52,6 +52,8 @@
   <depend>realsense2_camera</depend>
   <depend>rtabmap_ros</depend>
   <depend>move_base</depend>
+  <depend>kortex_control</depend>
+  <depend>kortex_description</depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->

@@ -2,7 +2,10 @@
 <robot name="paul" xmlns:xacro="http://www.ros.org/wiki/xacro">
   <!-- Need argument to get from launch file:
   based on https://answers.ros.org/question/379014/passing-outside-parameters-into-urdf-file-using-xacro/ -->
-  <xacro:arg name="simulation" default="true"/> 
+  <xacro:arg name="simulation" default="true"/>
+  <!-- Kinova arm parameters -->
+  <xacro:arg name="arm"        default="gen3_lite"/>
+  <xacro:arg name="gripper"    default="gen3_lite_2f"/>
 
   <!-- Need seperate property for xacro inorder processing -->
   <xacro:property name="simulation" value="$(arg simulation)"/> 
@@ -68,11 +71,11 @@
   <xacro:property name="realsense_rot_z" value="0.0" />
 
   <!-- Included files -->
-  <xacro:include filename="$(find paul_description)/urdf/wheel.urdf.xacro" />
-  <xacro:include filename="$(find paul_description)/urdf/caster.urdf.xacro" />
+  <xacro:include filename="$(find paul_description)/urdf/components/wheel.urdf.xacro" />
+  <xacro:include filename="$(find paul_description)/urdf/components/caster.urdf.xacro" />
   <xacro:include filename="$(find paul_description)/urdf/paul.gazebo.xacro" />
-  <xacro:include filename="$(find paul_description)/urdf/lidar.urdf.xacro" />
-
+  <xacro:include filename="$(find paul_description)/urdf/sensors/lidar.urdf.xacro" />
+  <xacro:include filename="$(find paul_description)/urdf/arms/$(arg arm)_$(arg gripper).xacro"/>
   <xacro:include filename="$(find paul_description)/urdf/d435/_d435.urdf.xacro"/>
 
   <!-- BASE FOOTPRINT -->
@@ -146,6 +149,22 @@
     <parent link="base_link"/>
     <child link="rgb2_link"/>
     <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Arm linear axis -->
+  <link name="linearAxis_link" />
+  <joint name="linearAxis" type="prismatic">
+    <limit effort="1000.0" lower="0" upper="1" velocity="0.5"/>
+    <parent link="base_link"/>
+    <child link="linearAxis_link"/>
+    <origin xyz="-0.6 0.0 0.0" rpy="0 -1.5708 0"/>
+  </joint>
+
+  <!-- Arm -->
+  <joint name="baseArm" type="fixed">
+    <parent link="linearAxis_link"/>
+    <child link="$(arg arm)_$(arg gripper)_base_link"/>
+    <origin xyz="0.0 0.0 0.0" rpy="0 1.5708 0"/>
   </joint>
 
   <!-- driven wheels -->
