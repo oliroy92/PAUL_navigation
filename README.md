@@ -37,7 +37,8 @@ Par la suite, vous pouvez procéder à la création et à la compilation de votr
     git clone https://github.com/Kinovarobotics/ros_kortex.git
     cd ros_kortex
     git checkout melodic-devel
-    cd ..
+    cd ../..
+    rosdep install --from-paths src --ignore-src -y
     sudo python3 -m pip install conan
     conan config set general.revisions_enabled=1
     conan profile new default --detect > /dev/null
