@@ -1,0 +1,35 @@
+model {
+  file: "model.sdf"
+}
+name: "Nestle_Skinny_Cow_Dreamy_Clusters_Candy_Dark_Chocolate_6_pack_1_oz_pouches"
+description: "Nestle Skinny Cow Dreamy Clusters Candy, Dark Chocolate - 6 pack, 1 oz pouches"
+version: 1
+authors {
+  name: "Google"
+  email: "scanned-objects@google.com"
+}
+legal {
+  copyright: "Copyright 2020 Google LLC."
+  license: "Creative Commons Attribution 4.0 International"
+}
+annotations {
+  key: "brand"
+  value: "Nestle"
+}
+annotations {
+  key: "gtin"
+  value: "00028000321437"
+}
+annotations {
+  key: "sku"
+  value: "00028000321437"
+}
+compatibilities {
+  name: "Gazebo"
+  version {
+    major: 11
+  }
+}
+categories {
+  first: "Consumer Goods"
+}

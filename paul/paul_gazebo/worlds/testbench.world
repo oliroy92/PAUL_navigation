@@ -1,30 +1,159 @@
 <?xml version="1.0" ?>
 <sdf version="1.6">
-  <world name="grocery_store">
+  <world name="testbench">
     <!-- A global light source -->
     <include>
       <uri>model://sun</uri>
     </include>
-    <!-- A ground plane -->
+
+    <!-- ====================================================
+         ===================== PLANCHER =====================
+         ==================================================== -->
+
     <include>
-      <uri>model://ground_plane</uri>
+      <uri>model://floor</uri>
     </include>
 
-    <!-- Shelving population -->
-    <population name="shelves">
-      <model name="shelving_4">
+    <!-- ====================================================
+         ======================= MURS =======================
+         ==================================================== -->
+
+    <include>
+      <uri>model://walls</uri>
+    </include>
+
+    <include>
+      <uri>model://logo</uri>
+      <pose>8.25 0 1.25 0 0 0</pose>
+    </include>
+
+
+    <!-- ====================================================
+         ===================== Étagères =====================
+         ==================================================== -->
+
+    <include>
+      <uri>model://shelving_4</uri>
+      <pose>1.5 0 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://shelving_4</uri>
+      <pose>0.5 0 0 0 0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://shelving_8</uri>
+      <pose>-0.5 0 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://shelving_8</uri>
+      <pose>-1.5 0 0 0 0 0</pose>
+    </include>
+
+    <!-- ====================================================
+         ===================== Produits =====================
+         ==================================================== -->
+
+    <!-- 8 étagères - niveau 3 -->
+    <population name="chocolate_cupcakes">
+      <model name="Little_Debbie_Chocolate_Cupcakes_8_ct">
+        
         <include>
-          <uri>model://shelving_4</uri>
+          <uri>model://Little_Debbie_Chocolate_Cupcakes_8_ct</uri>
         </include>
       </model>
-      <pose>0 0 0 0 0 0</pose>
+      <pose>-0.4 0 0.675 0 0 0</pose>
       <distribution>
         <type>grid</type>
-        <rows>2</rows> <!-- number of alleys -->
-        <cols>8</cols> <!-- side by side--> 
-        <step>1 4 0</step>
+        <rows>5</rows>
+        <cols>2</cols>
+        <step>0.32 0.06 0</step>
       </distribution>
     </population>
+
+    <population name="cloud_cakes">
+      <model name="Little_Debbie_Cloud_Cakes_10_ct">
+        
+        <include>
+          <uri>model://Little_Debbie_Cloud_Cakes_10_ct</uri>
+        </include>
+      </model>
+      <pose>-1 0 0.675 0 0 0</pose>
+      <distribution>
+        <type>grid</type>
+        <rows>4</rows>
+        <cols>2</cols>
+        <step>0.27 0.1 0</step>
+      </distribution>
+    </population>
+
+    <population name="donut_sticks">
+      <model name="Little_Debbie_Donut_Sticks_6_cake_donuts_10_oz_total">
+        
+        <include>
+          <uri>model://Little_Debbie_Donut_Sticks_6_cake_donuts_10_oz_total</uri>
+        </include>
+      </model>
+      <pose>-1.65 0 0.675 0 0 0</pose>
+      <distribution>
+        <type>grid</type>
+        <rows>7</rows>
+        <cols>2</cols>
+        <step>0.35 0.04 0</step>
+      </distribution>
+    </population>
+
+    <!-- 8 étagères - niveau 4 -->
+    <population name="skinny_cow_raspberry">
+      <model name="Nestle_Skinny_Cow_Heavenly_Crisp_Candy_Bar_Chocolate_Raspberry_6_pack_462_oz_total">
+        
+        <include>
+          <uri>model://Nestle_Skinny_Cow_Heavenly_Crisp_Candy_Bar_Chocolate_Raspberry_6_pack_462_oz_total</uri>
+        </include>
+      </model>
+      <pose>-0.35 0 0.975 0 0 0</pose>
+      <distribution>
+        <type>grid</type>
+        <rows>5</rows>
+        <cols>4</cols>
+        <step>0.13 0.06 0</step>
+      </distribution>
+    </population>
+
+    <population name="skinny_cow_chocolate">
+      <model name="Nestle_Skinny_Cow_Dreamy_Clusters_Candy_Dark_Chocolate_6_pack_1_oz_pouches">
+        
+        <include>
+          <uri>model://Nestle_Skinny_Cow_Dreamy_Clusters_Candy_Dark_Chocolate_6_pack_1_oz_pouches</uri>
+        </include>
+      </model>
+      <pose>-1 0 0.975 0 0 0</pose>
+      <distribution>
+        <type>grid</type>
+        <rows>5</rows>
+        <cols>5</cols>
+        <step>0.15 0.06 0</step>
+      </distribution>
+    </population>
+
+    <population name="nips">
+      <model name="Nestle_Nips_Hard_Candy_Peanut_Butter">
+        
+        <include>
+          <uri>model://Nestle_Nips_Hard_Candy_Peanut_Butter</uri>
+        </include>
+      </model>
+      <pose>-1.6 0 0.975 0 0 0</pose>
+      <distribution>
+        <type>grid</type>
+        <rows>5</rows>
+        <cols>4</cols>
+        <step>0.1 0.05 0</step>
+      </distribution>
+    </population>
+
+
+
 
   </world>
 </sdf>
