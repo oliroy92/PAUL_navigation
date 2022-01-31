@@ -2,13 +2,13 @@
 <robot name="paul" xmlns:xacro="http://www.ros.org/wiki/xacro">
   <!-- Need argument to get from launch file:
   based on https://answers.ros.org/question/379014/passing-outside-parameters-into-urdf-file-using-xacro/ -->
-  <xacro:arg name="simulation" default="true"/>
+  <xacro:arg name="sim" default="true"/>
   <!-- Kinova arm parameters -->
   <xacro:arg name="arm"        default="gen3_lite"/>
   <xacro:arg name="gripper"    default="gen3_lite_2f"/>
 
   <!-- Need seperate property for xacro inorder processing -->
-  <xacro:property name="simulation" value="$(arg simulation)"/> 
+  <xacro:property name="sim" value="$(arg sim)"/> 
 
   <!-- Constant for paul base -->
   <xacro:property name="mass" 			value="20.0" />
@@ -75,7 +75,6 @@
   <xacro:include filename="$(find paul_description)/urdf/components/caster.urdf.xacro" />
   <xacro:include filename="$(find paul_description)/urdf/paul.gazebo.xacro" />
   <xacro:include filename="$(find paul_description)/urdf/sensors/lidar.urdf.xacro" />
-  <xacro:include filename="$(find paul_description)/urdf/arms/$(arg arm)_$(arg gripper).xacro"/>
   <xacro:include filename="$(find paul_description)/urdf/d435/_d435.urdf.xacro"/>
 
   <!-- BASE FOOTPRINT -->
@@ -160,12 +159,13 @@
     <origin xyz="-0.6 0.0 0.0" rpy="0 -1.5708 0"/>
   </joint>
 
-  <!-- Arm -->
+  <!-- Arm: xacro must be after so the baseArm joint exists -->
   <joint name="baseArm" type="fixed">
     <parent link="linearAxis_link"/>
     <child link="$(arg arm)_$(arg gripper)_base_link"/>
     <origin xyz="0.0 0.0 0.0" rpy="0 1.5708 0"/>
   </joint>
+  <xacro:include filename="$(find paul_description)/urdf/arms/arm.xacro"/>
 
   <!-- driven wheels -->
     <!-- Right Wheel: "wheel_R_link" and "wheel_R_joint" -->
@@ -185,7 +185,7 @@
   </xacro:lidar>
 
   <!-- D435 RGB-D Sensor -->
-  <xacro:sensor_d435 parent="base_link" use_nominal_extrinsics="${simulation}">
+  <xacro:sensor_d435 parent="base_link" use_nominal_extrinsics="${sim}">
     <origin xyz="${realsense_pose_x} ${realsense_pose_y} ${realsense_pose_z}" rpy="${realsense_rot_x} ${realsense_rot_y} ${realsense_rot_z}"/>
   </xacro:sensor_d435>
 
