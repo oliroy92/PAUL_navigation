@@ -7,7 +7,7 @@ Répertoire principal contenant les différents packages ROS pour le projet. On 
 L'installation se fait facilement à partir du code source. Avant de commencer, assurez-vous d'installer les packages requis.
 
 ```bash
-sudo apt install ros-melodic-realsense2-description ros-melodic-realsense2-camera ros-melodic-rtabmap-ros ros-melodic-move-base ros-melodic-rviz-imu-plugin
+sudo apt install ros-melodic-realsense2-description ros-melodic-realsense2-camera ros-melodic-rtabmap-ros ros-melodic-move-base ros-melodic-rviz-imu-plugin ros-melodic-rplidar-ros
 ```
 
 Par la suite, vous pouvez procéder à la création et à la compilation de votre environnement catkin.
@@ -46,23 +46,12 @@ Par la suite, vous pouvez procéder à la création et à la compilation de votr
     conan profile new default --detect > /dev/null
     conan profile update settings.compiler.libcxx=libstdc++11 default
     ```
-    
-5. Installation du plugin du lidar et configuration USB:
-    ```bash
-    cd ~/catkin_ws/src
-    git clone https://github.com/Slamtec/rplidar_ros.git
-    cd rplidar_ros
-    KERNEL=="ttyUSB*", MODE="0666"
-    ./scripts/create_udev_rules.sh
-    ```
 
-6. Installation de l'IMU (BNO055):
+5. Installation de l'IMU (BNO055):
     ```bash
     cd ~/catkin_ws/src
     git clone https://github.com/RoboticArts/ros_imu_bno055.git
-    cd .. 
-    catkin_make --only-pkg-with-deps ros_imu_bno055
-    python3 -m pip install pyserial
+    python3 -m pip install pyserial rospkg
     sudo adduser $USER dialout # Redémarrer si la communication USB ne marche pas
     ```
 6. Compilation des packages:
