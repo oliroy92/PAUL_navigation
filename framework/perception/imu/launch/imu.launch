@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<launch>
+  <arg name="serial_port"       default="/dev/ttyUSB0" />
+  <arg name="frame_id"          default="imu_link" />
+  <arg name="operation_mode"    default="IMU"/>
+  <arg name="use_magnetometer"  default="false" />
+  <arg name="use_temperature"   default="false" /> 
+
+  <include file="$(find ros_imu_bno055)/launch/imu.launch">
+    <arg name="serial_port"       value="$(arg serial_port)" />
+    <arg name="frame_id"          value="$(arg frame_id)" />
+    <arg name="operation_mode"    value="$(arg operation_mode)"/>
+    <arg name="use_magnetometer"  value="$(arg use_magnetometer)" />
+    <arg name="use_temperature"   value="$(arg use_temperature)" /> 
+  </include>
+</launch>
