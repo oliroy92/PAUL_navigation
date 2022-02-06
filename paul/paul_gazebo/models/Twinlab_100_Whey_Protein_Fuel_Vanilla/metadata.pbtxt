@@ -1,0 +1,39 @@
+model {
+  file: "model.sdf"
+}
+name: "Twinlab_100_Whey_Protein_Fuel_Vanilla"
+description: "Twinlab 100% Whey Protein Fuel Vanilla\nOur 100% Whey Fuel ever is a superior blend of high quality, bioavailable whey proteins that\'s fully instantized, quick dissolving and easy to mix with a rich, creamy taste in both water and skim milk.  100% Whey Fuel stimulates muscle protein anabolism, which maximizes muscle growth that occurs after exercise by enhancing muscle building and lean tissue mass.* It also increases muscle performance and improves post-workout recovery.* Clinical studies show that whey protein is one of the most anabolic muscle building proteins available, providing a rapid drive of amino acids to skeletal muscle tissue, thereby increasing the effects of weight training.* Enhanced muscle protein anabolism increases muscle growth to maximize gains.* Additionally, research shows that whey protein is among the most easily digested and absorbed proteins, and has one of the highest Protein Efficiency Ratios, providing more branched chain amino acids than most other proteins. 100% Whey Fuel stimulates muscle protein anabolism, which maximizes muscle growth that occurs after exercise by enhancing muscle building and lean tissue mass.* It also increases muscle performance and improves post-workout recovery*.  *These statements have not been evaluated by the Food and Drug Administration.  This product is not intended to diagnose, treat, cure or prevent disease."
+version: 1
+authors {
+  name: "Google"
+  email: "scanned-objects@google.com"
+}
+legal {
+  copyright: "Copyright 2020 Google LLC."
+  license: "Creative Commons Attribution 4.0 International"
+}
+annotations {
+  key: "brand"
+  value: "Twinlab Fuel"
+}
+annotations {
+  key: "gtin"
+  value: "027434038133"
+}
+annotations {
+  key: "mpn"
+  value: "2953"
+}
+annotations {
+  key: "sku"
+  value: "0-27434-03813-3"
+}
+compatibilities {
+  name: "Gazebo"
+  version {
+    major: 11
+  }
+}
+categories {
+  first: "Bottles and Cans and Cups"
+}

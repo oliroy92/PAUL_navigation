@@ -104,8 +104,8 @@
     <collision>
       <origin xyz="0.0 0.0 ${base_height/2}" rpy="0.0 0.0 0.0"/>
       <geometry>
-        <!--box size ="${base_length} ${base_width} ${base_height}" /-->
-        <mesh filename="package://paul_description/meshes/shopping-cart-without-wheels.stl"/>
+        <box size ="${base_length} ${base_width} ${base_height}" />
+        <!-- <mesh filename="package://paul_description/meshes/shopping-cart-without-wheels.stl"/> -->
       </geometry>
     </collision>
 
@@ -160,12 +160,12 @@
   </joint>
 
   <!-- Arm: xacro must be after so the baseArm joint exists -->
-  <joint name="baseArm" type="fixed">
+  <!-- <joint name="baseArm" type="fixed">
     <parent link="linearAxis_link"/>
     <child link="$(arg arm)_$(arg gripper)_base_link"/>
     <origin xyz="0.0 0.0 0.0" rpy="0 1.5708 0"/>
   </joint>
-  <xacro:include filename="$(find paul_description)/urdf/arms/arm.xacro"/>
+  <xacro:include filename="$(find paul_description)/urdf/arms/arm.xacro"/> -->
 
   <!-- driven wheels -->
     <!-- Right Wheel: "wheel_R_link" and "wheel_R_joint" -->

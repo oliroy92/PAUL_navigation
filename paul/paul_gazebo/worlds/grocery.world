@@ -77,43 +77,33 @@
       <pose>0 -4.5 0 0 0 3.1416</pose>
     </include>
 
-    <model name="big_showcase">
-      <pose>0 -2.5 0.5 0 0 0</pose>
-      <static>true</static>
-      <link name="link">
-        <collision name="collision">
-          <geometry>
-            <box>
-              <size>6 1 1</size>
-            </box>
-          </geometry>
-        </collision>
-        <visual name="visual">
-          <geometry>
-            <box>
-              <size>6 1 1</size>
-            </box>
-          </geometry>
-          <material>
-            <script>
-              <uri>file://media/materials/scripts/gazebo.material</uri>
-              <name>Gazebo/Grey</name>
-            </script>
-            <ambient>0.4 0.65 0.73 1</ambient>
-          </material>
-        </visual>
-      </link>
-    </model>
+    <include>
+      <name>alley_4_display_1</name>
+      <uri>model://display</uri>
+      <pose>3 -2.5 0 0 0 0</pose>
+    </include>
+
+    <include>
+      <name>alley_4_display_2</name>
+      <uri>model://display</uri>
+      <pose>0 -2.5 0 0 0 0</pose>
+    </include>
+
+    <include>
+      <name>alley_4_display_3</name>
+      <uri>model://display</uri>
+      <pose>-3 -2.5 0 0 0 0</pose>
+    </include>
 
     <!-- Allée 5 -->
     <include>
       <name>alley_5_left_shelf</name>
-      <uri>model://8x_shelving_4</uri>
+      <uri>model://8x_shelving_8</uri>
       <pose>0 -5 0 0 0 0</pose>
     </include>
     <include>
       <name>alley_5_right_shelf</name>
-      <uri>model://8x_shelving_4</uri>
+      <uri>model://8x_shelving_8</uri>
       <pose>0 -9 0 0 0 3.1416</pose>
     </include>
 
