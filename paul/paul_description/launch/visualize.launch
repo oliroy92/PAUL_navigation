@@ -1,18 +1,10 @@
 <?xml version="1.0" ?>
 <launch>
-    <arg name="simulation" default="false"/>
-    <!-- Kinova arm parameters -->
-    <arg name="arm"        default="gen3_lite"/>
-    <arg name="gripper"    default="gen3_lite_2f"/>
-
     <!-- Launch RVIZ -->
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find paul_bringup)/config/rviz_cfg.rviz"/>
 
     <!-- Load robot description and state publishers -->
     <include file="$(find paul_description)/launch/upload.launch">
-        <arg name="simulation" value="$(arg simulation)"/>
-        <arg name="arm"        value="$(arg arm)"/>
-        <arg name="gripper"    value="$(arg gripper)"/>
-        <arg name="use_gui"    value="true"/>
+        <arg name="use_gui" value="true"/>
     </include>
 </launch>
