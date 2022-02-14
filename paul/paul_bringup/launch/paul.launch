@@ -52,6 +52,15 @@
                     <arg name="align_depth" value="true"/>
                 </include>
             </group>
+            <include file="$(find imu)/launch/imu.launch"/>
+            <include file="$(find lidar)/launch/lidar.launch"/>
+            <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization">
+                <rosparam command="load" file="$(find paul_control)/config/localization.yaml" />
+            </node>
+            <!-- Load controller configuration -->
+            <rosparam command="load" file="$(find paul_control)/config/control.yaml" />
+            <!-- Spawn controllers -->
+            <node name="base_controller_spawner" pkg="controller_manager" type="spawner" args="paul_joint_publisher paul_velocity_controller"/>
         </group>
 
         <!-- TODO: add move_base and rtabmap in navigation package -->
