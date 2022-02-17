@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: paul_description
+    relative_path: urdf/paul.urdf.xacro
+    xacro_args: ""
+  SRDF:
+    relative_path: config/paul.srdf
+  CONFIG:
+    author_name: Olivier Roy
+    author_email: royo2206@usherbrooke.ca
+    generated_timestamp: 1644107600

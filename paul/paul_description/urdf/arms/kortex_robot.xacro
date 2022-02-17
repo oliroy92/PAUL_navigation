@@ -22,7 +22,6 @@
         </xacro:if>
 
         <!-- Run the macros -->
-        
         <!-- Load the arm -->
         <xacro:load_arm parent="" dof="${dof}" vision="${vision}" prefix="${prefix}">
             <origin xyz="0 0 0" rpy="0 0 0"/> 

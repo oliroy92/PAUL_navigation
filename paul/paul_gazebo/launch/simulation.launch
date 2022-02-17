@@ -1,8 +1,12 @@
 <?xml version="1.0" ?>
 <launch>
     <!-- Parameters -->
-    <arg name="gui" default="true"/>
-    <arg name="robot_name" default="paul"/>
+    <arg name="gui"                 default="true"/>
+    <arg name="robot_name"          default="paul"/>
+    <!-- Gazebo parameters -->
+    <arg name="use_sim_time"        default="true"/>
+    <arg name="debug"               default="false" />
+    <arg name="paused"              default="true"/>
 
     <!-- Initiate an empty world in Gazebo -->
     <!-- (for more parameters: https://github.com/ros-simulation/gazebo_ros_pkgs/blob/noetic-devel/gazebo_ros/launch/empty_world.launch) -->

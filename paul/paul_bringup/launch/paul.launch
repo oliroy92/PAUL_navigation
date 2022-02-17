@@ -1,13 +1,19 @@
 <?xml version="1.0" ?>
 <launch>
-	<!-- Loading arguments -->
+    <!-- Arm configuration -->
+    <arg name="arm" default="$(optenv PAUL_ARM_MODEL gen3_lite)"/>
+    <arg name="dof" default="$(optenv PAUL_ARM_DOF 6)"/>
+    <arg name="vision" default="$(optenv PAUL_ARM_VISION false)"/>
+    <arg name="gripper" default="$(optenv PAUL_ARM_GRIPPER gen3_lite_2f)"/>
+
+    <!-- Namespace -->
     <arg name="robot_name" default="paul"/>
-    <arg name="simulation" default="false"/>
+    <arg name="prefix" default="$(optenv PAUL_ARM_PREFIX arm)"/>
+    <arg name="sim" default="$(optenv PAUL_ARM_SIM false)"/>
+
     <arg name="gazebo_gui" default="true"/>
     <arg name="rviz" default="true"/>
     <arg name="rviz_config_file" default="rviz_cfg.rviz"/>
-    <arg name="arm"        default="gen3_lite"/>
-    <arg name="gripper"    default="gen3_lite_2f"/>
 
     <arg name="with_d435" default="true"/>
     
@@ -20,42 +26,55 @@
     <node if="$(arg rviz)" name="rviz" pkg="rviz" type="rviz" args="-d $(find paul_bringup)/config/$(arg rviz_config_file)"/>
 
     <!-- Launch simulation environment -->
-    <group if="$(arg simulation)">
-        <include file="$(find paul_gazebo)/launch/simulation.launch">
-            <arg name="gui" value="$(arg gazebo_gui)"/>
-            <arg name="robot_name" value="$(arg robot_name)"/>
-        </include>
+    <group if="$(arg sim)">
+        <!-- Launch gazebo -->
+        <include file="$(find paul_gazebo)/launch/start_gazebo.launch"/>
     </group>
 
-    <!-- Launch sensors on real robot -->
-    <group unless="$(arg simulation)">
-        <!-- d435 camera -->
-        <group if="$(arg with_d435)">
-            <include file="$(find realsense2_camera)/launch/rs_camera.launch">
-                <arg name="filters" value="pointcloud"/>
-                <arg name="align_depth" value="true"/>
+    <group ns="$(arg robot_name)">
+        <!-- Load robot description and state publishers -->
+        <include file="$(find paul_description)/launch/upload.launch"/>
+        
+        <!-- Launch simulation environment -->
+        <group if="$(arg sim)">
+            <include file="$(find paul_gazebo)/launch/simulation.launch">
+                <arg name="gui" value="$(arg gazebo_gui)"/>
+                <arg name="robot_name" value="$(arg robot_name)"/>
             </include>
         </group>
-    </group>
 
-    <!-- Load robot description and state publishers -->
-    <include file="$(find paul_description)/launch/upload.launch">
-        <arg name="simulation" value="$(arg simulation)"/>
-        <arg name="arm"        value="$(arg arm)"/>
-        <arg name="gripper"    value="$(arg gripper)"/>
-    </include>
+        <!-- Launch sensors on real robot -->
+        <group unless="$(arg sim)">
+            <!-- d435 camera -->
+            <group if="$(arg with_d435)">
+                <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+                    <arg name="filters" value="pointcloud"/>
+                    <arg name="align_depth" value="true"/>
+                </include>
+            </group>
+            <include file="$(find imu)/launch/imu.launch"/>
+            <include file="$(find lidar)/launch/lidar.launch"/>
+            <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization">
+                <rosparam command="load" file="$(find paul_control)/config/localization.yaml" />
+            </node>
+            <!-- Load controller configuration -->
+            <rosparam command="load" file="$(find paul_control)/config/control.yaml" />
+            <!-- Spawn controllers -->
+            <node name="base_controller_spawner" pkg="controller_manager" type="spawner" args="paul_joint_publisher paul_velocity_controller"/>
+        </group>
 
-    <!-- TODO: add move_base and rtabmap in navigation package -->
-    <!-- Launching move_base to move robot around -->
-    <group if="$(arg with_rtabmap)">
-        <include file="$(find navigation)/launch/move_base.launch"/>
-    </group>
+        <!-- TODO: add move_base and rtabmap in navigation package -->
+        <!-- Launching move_base to move robot around -->
+        <group if="$(arg with_rtabmap)">
+            <include file="$(find navigation)/launch/move_base.launch"/>
+        </group>
 
-    <!-- RTABMap -->
-    <group if="$(arg with_rtabmap)">
-        <include file="$(find slam)/launch/rtabmap.launch">
-            <arg name="rtabmapviz" value="$(arg rtabmapviz)"/>
-            <arg name="localization" value="$(arg localization)"/>
-        </include>
+        <!-- RTABMap -->
+        <group if="$(arg with_rtabmap)">
+            <include file="$(find slam)/launch/rtabmap.launch">
+                <arg name="rtabmapviz" value="$(arg rtabmapviz)"/>
+                <arg name="localization" value="$(arg localization)"/>
+            </include>
+        </group>
     </group>
 </launch>
