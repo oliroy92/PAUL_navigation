@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<launch>
+    <!-- Parameters -->
+    <arg name="gui" default="true"/>
+    <arg name="arm" default="gen3_lite"/>
+
+    <!-- Initiate an empty world in Gazebo -->
+    <!-- (for more parameters: https://github.com/ros-simulation/gazebo_ros_pkgs/blob/noetic-devel/gazebo_ros/launch/empty_world.launch) -->
+    <include file="$(find paul_gazebo)/launch/world.launch">
+        <arg name="gui" value="$(arg gui)"/>
+        <arg name="paused" value="true"/>
+    </include> 
+
+    <!-- Spawn Kinova arm into Gazebo -->
+    <include file="$(find kortex_gazebo)/launch/spawn_kortex_robot.launch">
+        <arg name="start_gazebo" value="false"/>
+        <arg name="start_rviz" default="false"/>
+
+        <arg name="x0" value="0.0"/>
+        <arg name="y0" value="-0.5"/>
+        <arg name="z0" value="0.5"/>
+
+        <arg name="arm" value="$(arg arm)"/>
+    </include> 
+
+</launch>

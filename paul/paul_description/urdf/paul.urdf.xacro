@@ -104,8 +104,8 @@
     <collision>
       <origin xyz="0.0 0.0 ${base_height/2}" rpy="0.0 0.0 0.0"/>
       <geometry>
-        <box size ="${base_length} ${base_width} ${base_height}" />
-        <!-- <mesh filename="package://paul_description/meshes/shopping-cart-without-wheels.stl"/> -->
+        <!-- <box size ="${base_length} ${base_width} ${base_height}" /> -->
+        <mesh filename="package://paul_description/meshes/shopping-cart-without-wheels.stl"/>
       </geometry>
     </collision>
 
