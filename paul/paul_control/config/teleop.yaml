@@ -1,0 +1,17 @@
+# config for xbox controller
+
+teleop_twist_joy:
+  axis_linear: 1  # Left thumb stick vertical
+  scale_linear: 1 # m/s
+  scale_linear_turbo: 2 # m/s
+
+  axis_angular: 0  # Left thumb stick horizontal, 3 for right thumb stick horizontal
+  scale_angular: 1    # rad/s
+
+  enable_button: 4  # Left trigger button
+  enable_turbo_button: 5  # Right trigger button
+  
+joy_node:
+  deadzone: 0.1
+  autorepeat_rate: 20
+  dev: /dev/input/js0
