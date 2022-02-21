@@ -1,0 +1,44 @@
+material Logo/White
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                texture ../textures/white_modified.png
+                scale 1.0  1.0
+            }
+        }
+    }
+}
+
+material Logo/Blue
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                texture ../textures/blue.png
+                scale 1.0  1.0
+            }
+        }
+    }
+}
+
+material Logo/DarkBlue
+{
+    technique
+    {
+        pass
+        {
+            texture_unit
+            {
+                texture ../textures/dark_blue.png
+                scale 1.0  1.0
+            }
+        }
+    }
+}

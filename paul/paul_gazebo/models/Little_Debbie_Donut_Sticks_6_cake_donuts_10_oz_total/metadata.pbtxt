@@ -1,0 +1,35 @@
+model {
+  file: "model.sdf"
+}
+name: "Little_Debbie_Donut_Sticks_6_cake_donuts_10_oz_total"
+description: "Little Debbie Donut, Sticks - 6 cake donuts, 10 oz total"
+version: 1
+authors {
+  name: "Google"
+  email: "scanned-objects@google.com"
+}
+legal {
+  copyright: "Copyright 2020 Google LLC."
+  license: "Creative Commons Attribution 4.0 International"
+}
+annotations {
+  key: "brand"
+  value: "Little"
+}
+annotations {
+  key: "gtin"
+  value: "00024300041341"
+}
+annotations {
+  key: "sku"
+  value: "00024300041341"
+}
+compatibilities {
+  name: "Gazebo"
+  version {
+    major: 11
+  }
+}
+categories {
+  first: "Consumer Goods"
+}

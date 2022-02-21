@@ -1,4 +1,6 @@
 <?xml version="1.0"?>
+<!-- Code taken from Kinova's ros_kortex repository -->
+<!-- Modified by William Babin-Demers, removed simulation world joint. -->
 
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
 

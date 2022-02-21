@@ -2,6 +2,9 @@
 <robot name="paul" xmlns:xacro="http://www.ros.org/wiki/xacro">
   <!-- Need argument to get from launch file:
   based on https://answers.ros.org/question/379014/passing-outside-parameters-into-urdf-file-using-xacro/ -->
+  <xacro:arg name="sim" default="true"/>
+
+  <!-- Kinova arm parameters -->
   <xacro:arg name="arm"     default="$(optenv PAUL_ARM_MODEL gen3_lite)" />
   <xacro:arg name="dof"     default="$(optenv PAUL_ARM_DOF 6)" />
   <xacro:arg name="vision"  default="$(optenv PAUL_ARM_VISION false)" />
@@ -9,6 +12,9 @@
 
   <xacro:arg name="sim"     default="$(optenv PAUL_ARM_SIM false)" />
   <xacro:arg name="prefix"  default="$(optenv PAUL_ARM_PREFIX arm_)" />
+
+  <!-- Need seperate property for xacro inorder processing -->
+  <xacro:property name="sim" value="$(arg sim)"/> 
 
   <!-- Constant for paul base -->
   <xacro:property name="mass" 			value="20.0" />
@@ -165,6 +171,7 @@
     <child link="armMount_link"/>
     <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
   </joint>
+  <xacro:include filename="$(find paul_description)/urdf/arms/arm.xacro"/> -->
 
   <!-- driven wheels -->
     <!-- Right Wheel: "wheel_R_link" and "wheel_R_joint" -->
@@ -184,7 +191,7 @@
   </xacro:lidar>
 
   <!-- D435 RGB-D Sensor -->
-  <xacro:sensor_d435 parent="base_link" use_nominal_extrinsics="${use_nominal_extrinsics}">
+  <xacro:sensor_d435 parent="base_link" use_nominal_extrinsics="${sim}">
     <origin xyz="${realsense_pose_x} ${realsense_pose_y} ${realsense_pose_z}" rpy="${realsense_rot_x} ${realsense_rot_y} ${realsense_rot_z}"/>
   </xacro:sensor_d435>
 

@@ -1,99 +1,194 @@
 <?xml version="1.0" ?>
-<sdf version="1.4">
+<sdf version="1.6">
   <world name="grocery_store">
     <!-- A global light source -->
     <include>
       <uri>model://sun</uri>
     </include>
-    <!-- A ground plane -->
+
+    <!-- ====================================================
+         ===================== PLANCHER =====================
+         ==================================================== -->
+
     <include>
-      <uri>model://ground_plane</uri>
+      <uri>model://floor</uri>
+    </include>
+    
+    <!-- ====================================================
+         ====================== ALLÉES ======================
+         ==================================================== -->
+
+    <!-- Allée 1 -->
+    <include>
+      <name>alley_1_left_shelf</name>
+      <uri>model://8x_shelving_4</uri>
+      <pose>0 9 0 0 0 0</pose>
+    </include>
+    <include>
+      <name>alley_1_right_shelf</name>
+      <uri>model://8x_shelving_4</uri>
+      <pose>0 5 0 0 0 3.1416</pose>
     </include>
 
-    <!-- First row -->
     <include>
-      <uri>model://8x_shelving_4</uri>
-      <pose>3 0 0 0 0 0</pose>
+      <name>alley_1_freezer_1</name>
+      <uri>model://freezer</uri>
+      <pose>-2 7 0.5 0 0 0</pose>
     </include>
     <include>
-      <uri>model://8x_shelving_4</uri>
-      <pose>10 -2.5 0 0 0 3.1416</pose>
-    </include>
-    <!-- Second row -->
-    <include>
-      <uri>model://8x_shelving_4</uri>
-      <pose>3 -3 0 0 0 0</pose>
-    </include>
-    <include>
-      <uri>model://8x_shelving_4</uri>
-      <pose>10 -5.5 0 0 0 3.1416</pose>
+      <name>alley_1_freezer_2</name>
+      <uri>model://freezer</uri>
+      <pose>2 7 0.5 0 0 0</pose>
     </include>
 
-    <!-- Third row -->
+    <!-- Allée 2 -->
     <include>
-      <uri>model://8x_shelving_4</uri>
-      <pose>10 0.5 0 0 0 3.1416</pose>
+      <name>alley_2_left_shelf</name>
+      <uri>model://8x_shelving_8</uri>
+      <pose>0 4.5 0 0 0 0</pose>
     </include>
     <include>
-      <uri>model://8x_shelving_4</uri>
-      <pose>3 3 0 0 0 0</pose>
-    </include>
-
-    <!-- Fourth row -->
-    <include>
-      <uri>model://8x_shelving_4</uri>
-      <pose>3 -6 0 0 0 0</pose>
-    </include>
-    <include>
-      <uri>model://8x_shelving_4</uri>
-      <pose>10 -8.5 0 0 0 3.1416</pose>
+      <name>alley_2_right_shelf</name>
+      <uri>model://8x_shelving_8</uri>
+      <pose>0 2.5 0 0 0 3.1416</pose>
     </include>
 
-    <!-- Walls -->
-    <!-- Y Direction -->
+    <!-- Allée 3 -->
     <include>
-      <uri>model://grey_wall</uri>
-      <pose>-2 0 0 0 0 1.5708</pose>
-    </include>
-    <!-- Walls -->
-    <include>
-      <uri>model://grey_wall</uri>
-      <pose>-2 7.5 0 0 0 1.5708</pose>
+      <name>alley_3_left_shelf</name>
+      <uri>model://8x_shelving_4</uri>
+      <pose>0 2 0 0 0 0</pose>
     </include>
     <include>
-      <uri>model://grey_wall</uri>
-      <pose>-2 -7.5 0 0 0 1.5708</pose>
+      <name>alley_3_right_shelf</name>
+      <uri>model://8x_shelving_4</uri>
+      <pose>0 0 0 0 0 3.1416</pose>
     </include>
-    <!-- X direction -->
+
+    <!-- Allée 4 -->
     <include>
-      <uri>model://grey_wall</uri>
-      <pose>1.75 -11.25 0 0 0 0</pose>
-    </include>
-    <include>
-      <uri>model://grey_wall</uri>
-      <pose>9.25 -11.25 0 0 0 0</pose>
-    </include>
-    <!-- Y Direction -->
-    <include>
-      <uri>model://grey_wall</uri>
-      <pose>13 0 0 0 0 1.5708</pose>
+      <name>alley_4_left_shelf</name>
+      <uri>model://8x_shelving_4</uri>
+      <pose>0 -0.5 0 0 0 0</pose>
     </include>
     <include>
-      <uri>model://grey_wall</uri>
-      <pose>13 7.5 0 0 0 1.5708</pose>
+      <name>alley_4_right_shelf</name>
+      <uri>model://8x_shelving_4</uri>
+      <pose>0 -4.5 0 0 0 3.1416</pose>
+    </include>
+
+    <include>
+      <name>alley_4_display_1</name>
+      <uri>model://display</uri>
+      <pose>3 -2.5 0 0 0 0</pose>
+    </include>
+
+    <include>
+      <name>alley_4_display_2</name>
+      <uri>model://display</uri>
+      <pose>0 -2.5 0 0 0 0</pose>
+    </include>
+
+    <include>
+      <name>alley_4_display_3</name>
+      <uri>model://display</uri>
+      <pose>-3 -2.5 0 0 0 0</pose>
+    </include>
+
+    <!-- Allée 5 -->
+    <include>
+      <name>alley_5_left_shelf</name>
+      <uri>model://8x_shelving_8</uri>
+      <pose>0 -5 0 0 0 0</pose>
     </include>
     <include>
-      <uri>model://grey_wall</uri>
-      <pose>13 -7.5 0 0 0 1.5708</pose>
+      <name>alley_5_right_shelf</name>
+      <uri>model://8x_shelving_8</uri>
+      <pose>0 -9 0 0 0 3.1416</pose>
     </include>
-    <!-- X direction -->
+
     <include>
-      <uri>model://grey_wall</uri>
-      <pose>1.75 11.25 0 0 0 0</pose>
+      <name>alley_5_pallet_1</name>
+      <uri>model://pallet</uri>
+      <pose>-2 -7 0.1 0 0 0</pose>
     </include>
     <include>
-      <uri>model://grey_wall</uri>
-      <pose>9.25 11.25 0 0 0 0</pose>
+      <name>alley_5_pallet_2</name>
+      <uri>model://pallet</uri>
+      <pose>0 -7 0.1 0 0 0</pose>
     </include>
+    <include>
+      <name>alley_5_pallet_3</name>
+      <uri>model://pallet</uri>
+      <pose>2 -7 0.1 0 0 0</pose>
+    </include>
+
+    <!-- Back wall -->
+    <include>
+      <name>back_wall_left_shelf</name>
+      <uri>model://8x_shelving_4</uri>
+      <pose>8 5.25 0 0 0 -1.5708</pose>
+    </include>
+    <include>
+      <name>back_wall_right_shelf</name>
+      <uri>model://8x_shelving_8</uri>
+      <pose>8 -5.25 0 0 0 -1.5708</pose>
+    </include>
+
+    <population name="back_wall_corner_shelf">
+      <model name="shelving_4">
+        <include>
+          <uri>model://shelving_4</uri>
+        </include>
+      </model>
+      <pose>6.75 9 0 0 0 0</pose>
+      <distribution>
+        <type>grid</type>
+        <rows>1</rows>
+        <cols>3</cols>
+        <step>1 0 0</step>
+      </distribution>
+    </population>
+
+    <include>
+      <name>back_wall_freezer_1</name>
+      <uri>model://freezer</uri>
+      <pose>6 -3 0.5 0 0 1.5708</pose>
+    </include>
+    <include>
+      <name>back_wall_freezer_2</name>
+      <uri>model://freezer</uri>
+      <pose>6 -7 0.5 0 0 1.5708</pose>
+    </include>
+
+    <include>
+      <name>back_wall_pallet_1</name>
+      <uri>model://pallet</uri>
+      <pose>6 2 0.1 0 0 0</pose>
+    </include>
+    <include>
+      <name>back_wall_pallet_2</name>
+      <uri>model://pallet</uri>
+      <pose>6 4 0.1 0 0 0</pose>
+    </include>
+    <include>
+      <name>back_wall_pallet_3</name>
+      <uri>model://pallet</uri>
+      <pose>6 6 0.1 0 0 0</pose>
+    </include>
+
+    <!-- ====================================================
+         ======================= MURS =======================
+         ==================================================== -->
+
+    <include>
+      <uri>model://walls</uri>
+    </include>
+
+    <include>
+      <uri>model://logo</uri>
+      <pose>8.25 0 1.25 0 0 0</pose>
+    </include>
+    
   </world>
 </sdf>

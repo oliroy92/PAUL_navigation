@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<launch>
+    <!-- Parameters -->
+    <arg name="gui" default="true"/>
+    <arg name="verbose" default="false"/>
+    <arg name="paused" default="false"/>
+
+    <!-- Initiate an empty world in Gazebo -->
+    <!-- (for more parameters: https://github.com/ros-simulation/gazebo_ros_pkgs/blob/noetic-devel/gazebo_ros/launch/empty_world.launch) -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find paul_gazebo)/worlds/testbench_simplified.world"/>
+        <arg name="gui" value="$(arg gui)"/>
+        <arg name="verbose" value="$(arg verbose)"/>
+        <arg name="paused" default="$(arg paused)"/>
+    </include> 
+
+</launch>
