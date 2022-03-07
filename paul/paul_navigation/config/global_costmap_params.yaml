@@ -11,5 +11,5 @@ global_costmap:
   track_unknown_space: true
 
 plugins:
-  - {name: obstacle_layer,            type: "costmap_2d::VoxelLayer"}
-  - {name: inflation_layer,           type: "costmap_2d::InflationLayer"}
+  - {name: obstacle_layer,  type: "costmap_2d::VoxelLayer"}
+  - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
