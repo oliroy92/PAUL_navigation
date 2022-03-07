@@ -10,13 +10,13 @@
         <link name="laser_link">
             <visual>
                 <geometry>
-                    <box size ="0.1 0.1 0.1" />
-                    <!--mesh filename="package://paul_description/meshes/lidar.stl" /-->
+                    <cylinder length="0.05" radius="0.05"/>
+                    <!-- <mesh filename="package://paul_description/meshes/lidar.stl" scale="0.001 0.001 0.001"/> -->
                 </geometry>
             </visual>
             <collision>
                 <geometry>
-                    <box size="0.1 0.1 0.1"/>
+                    <cylinder length="0.05" radius="0.05"/>
                 </geometry>
             </collision>
         </link>
@@ -48,7 +48,7 @@
                 </ray>
                 <plugin name="laser_node" filename="libgazebo_ros_laser.so">
                     <topicName>/laser_scan</topicName>
-                    <frameName>laser_link</frameName>
+                    <frameName>/laser_link</frameName> <!-- slash required for global namespace -->
                 </plugin>
             </sensor>
         </gazebo>

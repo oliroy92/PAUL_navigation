@@ -70,7 +70,7 @@ Le package *paul_bringup* est responsable de lancer les différents mode du robo
 Dans un nouveau terminal, effectuez les commandes suivantes:
 
 ```bash
-cd catkin_ws/
+cd ~/catkin_ws/
 source devel/setup.bash
 ```
 
