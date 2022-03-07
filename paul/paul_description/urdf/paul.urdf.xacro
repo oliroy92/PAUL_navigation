@@ -1,14 +1,19 @@
 <?xml version="1.0"?>
 <robot name="paul" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- ============================================== -->
+  <!-- ================= PARAMETERS ================= -->
+  <!-- ============================================== -->
+
   <!-- Need argument to get from launch file:
   based on https://answers.ros.org/question/379014/passing-outside-parameters-into-urdf-file-using-xacro/ -->
-  <xacro:arg name="simulation" default="true"/>
-  <!-- Kinova arm parameters -->
-  <xacro:arg name="arm"        default="gen3_lite"/>
-  <xacro:arg name="gripper"    default="gen3_lite_2f"/>
+  <xacro:arg name="sim" default="false"/>
 
-  <!-- Need seperate property for xacro inorder processing -->
-  <xacro:property name="simulation" value="$(arg simulation)"/> 
+  <!-- Kinova arm parameters -->
+  <xacro:arg name="arm"     default="gen3"/>
+  <xacro:arg name="dof"     default="7"/>
+  <xacro:arg name="vision"  default="true"/>
+  <xacro:arg name="gripper" default=""/>
 
   <!-- Constant for paul base -->
   <xacro:property name="mass" 			value="20.0" />
@@ -60,29 +65,34 @@
   <xacro:property name="caster_L_rot_y"		value=" ${caster_R_rot_y}"/>
   <xacro:property name="caster_L_rot_z"		value=" ${caster_R_rot_z}"/>
 
-
-  <!-- RGBD Sensor parameters -->
+  <!-- RGBD sensor parameters -->
   <xacro:property name="realsense_pose_x" value="${base_width}" />
   <xacro:property name="realsense_pose_y" value="0.0" />
   <xacro:property name="realsense_pose_z" value="${base_height}" />
-
+  <xacro:property name="use_nominal_extrinsics" value="$(arg sim)"/>
   <xacro:property name="realsense_rot_x" value="0.0" />
   <xacro:property name="realsense_rot_y" value="0.0" />
   <xacro:property name="realsense_rot_z" value="0.0" />
+
+  <!-- ============================================== -->
+  <!-- ================= COMPONENTS ================= -->
+  <!-- ============================================== -->
 
   <!-- Included files -->
   <xacro:include filename="$(find paul_description)/urdf/components/wheel.urdf.xacro" />
   <xacro:include filename="$(find paul_description)/urdf/components/caster.urdf.xacro" />
   <xacro:include filename="$(find paul_description)/urdf/paul.gazebo.xacro" />
   <xacro:include filename="$(find paul_description)/urdf/sensors/lidar.urdf.xacro" />
-  <xacro:include filename="$(find paul_description)/urdf/arms/$(arg arm)_$(arg gripper).xacro"/>
-  <xacro:include filename="$(find paul_description)/urdf/d435/_d435.urdf.xacro"/>
+  <xacro:include filename="$(find paul_description)/urdf/sensors/d435/_d435.urdf.xacro"/>
+  
+  <!-- ============================================== -->
+  <!-- ==================== BASE ==================== -->
+  <!-- ============================================== -->
 
-  <!-- BASE FOOTPRINT -->
   <!-- base_footprint is a fictitious link(frame) that is on the ground right below base_link origin -->
   <link name="base_footprint"/>
 
-  <!-- BASE_LINK (only static pieces) -->
+  <!-- base_link (only static pieces) -->
   <link name="base_link">
     <inertial>
       <mass value="24.265" />
@@ -103,9 +113,8 @@
     </visual>
 
     <collision>
-      <origin xyz="0.0 0.0 ${base_height/2}" rpy="0.0 0.0 0.0"/>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
       <geometry>
-        <!--box size ="${base_length} ${base_width} ${base_height}" /-->
         <mesh filename="package://paul_description/meshes/shopping-cart-without-wheels.stl"/>
       </geometry>
     </collision>
@@ -117,6 +126,23 @@
     <child link="base_link"/>
     <origin xyz="0.0 0.0 ${ground_to_base_z}" rpy="0 0 0"/>
   </joint>
+
+  <!-- driven wheels -->
+    <!-- Right Wheel: "wheel_R_link" and "wheel_R_joint" -->
+  <xacro:wheel lr="R" parent="base_link" wheelRadius="${wheel_radius}" wheelLength="${wheel_thickness}" wheelMass="${wheel_mass}" posX="${wheel_R_pose_x}" posY="${wheel_R_pose_y}" posZ="${wheel_R_pose_z}" flipY="1"/>
+    <!-- Left Wheel: "wheel_L_link" and "wheel_L_joint" -->
+  <xacro:wheel lr="L" parent="base_link" wheelRadius="${wheel_radius}" wheelLength="${wheel_thickness}" wheelMass="${wheel_mass}" posX="${wheel_L_pose_x}" posY="${wheel_L_pose_y}" posZ="${wheel_L_pose_z}" flipY="1"/>
+
+  <!-- caster wheels -->
+    <!-- Right caster wheel: "caster_R_link" and "caster_R_joint" -->
+  <xacro:caster lr="R" parent="base_link" casterRadius="${wheel_radius}" casterMass="${wheel_mass}" posX="${caster_R_pose_x}" posY="${caster_R_pose_y}" posZ="${caster_R_pose_z}" flipY="1"/>
+    <!-- Left caster wheel: "caster_L_link" and "caster_L_joint" -->
+  <xacro:caster lr="L" parent="base_link" casterRadius="${wheel_radius}" casterMass="${wheel_mass}" posX="${caster_L_pose_x}" posY="${caster_L_pose_y}" posZ="${caster_L_pose_z}" flipY="1"/>
+
+
+  <!-- ============================================== -->
+  <!-- ================== SENSORS =================== -->
+  <!-- ============================================== -->
 
   <!-- IMU -->
   <link name="imu_link"/>
@@ -151,42 +177,42 @@
     <origin xyz="0 0 0" rpy="0 0 0"/>
   </joint>
 
-  <!-- Arm linear axis -->
-  <link name="linearAxis_link" />
-  <joint name="linearAxis" type="prismatic">
-    <limit effort="1000.0" lower="0" upper="1" velocity="0.5"/>
-    <parent link="base_link"/>
-    <child link="linearAxis_link"/>
-    <origin xyz="-0.6 0.0 0.0" rpy="0 -1.5708 0"/>
-  </joint>
-
-  <!-- Arm -->
-  <joint name="baseArm" type="fixed">
-    <parent link="linearAxis_link"/>
-    <child link="$(arg arm)_$(arg gripper)_base_link"/>
-    <origin xyz="0.0 0.0 0.0" rpy="0 1.5708 0"/>
-  </joint>
-
-  <!-- driven wheels -->
-    <!-- Right Wheel: "wheel_R_link" and "wheel_R_joint" -->
-  <xacro:wheel lr="R" parent="base_link" wheelRadius="${wheel_radius}" wheelLength="${wheel_thickness}" wheelMass="${wheel_mass}" posX="${wheel_R_pose_x}" posY="${wheel_R_pose_y}" posZ="${wheel_R_pose_z}" flipY="1"/>
-    <!-- Left Wheel: "wheel_L_link" and "wheel_L_joint" -->
-  <xacro:wheel lr="L" parent="base_link" wheelRadius="${wheel_radius}" wheelLength="${wheel_thickness}" wheelMass="${wheel_mass}" posX="${wheel_L_pose_x}" posY="${wheel_L_pose_y}" posZ="${wheel_L_pose_z}" flipY="1"/>
-
-  <!-- caster wheels -->
-    <!-- Right caster wheel: "caster_R_link" and "caster_R_joint" -->
-  <xacro:caster lr="R" parent="base_link" casterRadius="${wheel_radius}" casterMass="${wheel_mass}" posX="${caster_R_pose_x}" posY="${caster_R_pose_y}" posZ="${caster_R_pose_z}" flipY="1"/>
-    <!-- Left caster wheel: "caster_L_link" and "caster_L_joint" -->
-  <xacro:caster lr="L" parent="base_link" casterRadius="${wheel_radius}" casterMass="${wheel_mass}" posX="${caster_L_pose_x}" posY="${caster_L_pose_y}" posZ="${caster_L_pose_z}" flipY="1"/>
-  
   <!-- Lidar sensor -->
   <xacro:lidar parent="base_link">
     <origin xyz="0.50614 0 0.1" rpy="0 0 0" />
   </xacro:lidar>
 
   <!-- D435 RGB-D Sensor -->
-  <xacro:sensor_d435 parent="base_link" use_nominal_extrinsics="${simulation}">
+  <xacro:sensor_d435 parent="base_link" use_nominal_extrinsics="${use_nominal_extrinsics}">
     <origin xyz="${realsense_pose_x} ${realsense_pose_y} ${realsense_pose_z}" rpy="${realsense_rot_x} ${realsense_rot_y} ${realsense_rot_z}"/>
   </xacro:sensor_d435>
+
+  <!-- ============================================== -->
+  <!-- ==================== ARM ===================== -->
+  <!-- ============================================== -->
+
+  <xacro:unless value="$(arg sim)">
+    <!-- linear axis -->
+    <link name="linear_axis_link" />
+    <joint name="linear_axis" type="prismatic">
+      <limit effort="1000.0" lower="0" upper="1" velocity="0.5"/>
+      <axis xyz="0 0 1"/>
+      <parent link="base_link"/>
+      <child link="linear_axis_link"/>
+      <origin xyz="-0.6 0.0 0.0" rpy="0 0 0"/>
+    </joint>
+  
+    <!-- load arm -->
+    <xacro:include filename="$(find paul_description)/urdf/arms/kortex_robot.xacro" />
+    <xacro:load_robot arm="$(arg arm)" gripper="$(arg gripper)" dof="$(arg dof)" vision="$(arg vision)" sim="$(arg sim)"  prefix="arm_" />
+
+    <!-- attach arm to newly created link -->
+    <joint name="arm_mount" type="fixed">
+      <parent link="linear_axis_link"/>
+      <child link="arm_base_link"/>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    </joint>
+
+  </xacro:unless>
 
 </robot>

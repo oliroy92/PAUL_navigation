@@ -6,6 +6,7 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
+        - /RobotModel1
         - /PointCloud21
       Splitter Ratio: 0.5
     Tree Height: 346
@@ -27,7 +28,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: Image
+    SyncSource: ""
   - Class: rviz_plugin_tutorials/Teleop
     Name: Teleop
     Topic: cmd_vel
@@ -123,7 +124,7 @@ Visualization Manager:
           Show Trail: false
           Value: true
       Name: RobotModel
-      Robot Description: robot_description
+      Robot Description: paul/robot_description
       TF Prefix: ""
       Update Interval: 0
       Value: true

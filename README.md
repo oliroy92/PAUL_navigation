@@ -7,7 +7,7 @@ Répertoire principal contenant les différents packages ROS pour le projet. On 
 L'installation se fait facilement à partir du code source. Avant de commencer, assurez-vous d'installer les packages requis.
 
 ```bash
-sudo apt install ros-melodic-realsense2-description ros-melodic-realsense2-camera ros-melodic-rtabmap-ros ros-melodic-move-base ros-melodic-rviz-imu-plugin ros-melodic-rplidar-ros ros-melodic-rosserial ros-melodic-rosserial-arduino
+sudo apt install ros-melodic-realsense2-description ros-melodic-realsense2-camera ros-melodic-rtabmap-ros ros-melodic-move-base ros-melodic-rviz-imu-plugin ros-melodic-rplidar-ros ros-melodic-rosserial ros-melodic-rosserial-arduino ros-melodic-rplidar-ros ros-melodic-robot-localization
 ```
 
 Par la suite, vous pouvez procéder à la création et à la compilation de votre environnement catkin.
@@ -76,7 +76,7 @@ Le package *paul_bringup* est responsable de lancer les différents mode du robo
 Dans un nouveau terminal, effectuez les commandes suivantes:
 
 ```bash
-cd catkin_ws/
+cd ~/catkin_ws/
 source devel/setup.bash
 ```
 
