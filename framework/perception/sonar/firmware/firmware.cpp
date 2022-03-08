@@ -20,9 +20,9 @@ void sensor_msg_init(sensor_msgs::Range &range_name, const char *frame_id_name)
 {
 	range_name.radiation_type = sensor_msgs::Range::ULTRASOUND;
 	range_name.header.frame_id = frame_id_name;
-	range_name.field_of_view = 0.26;
-	range_name.min_range = 0.0;
-	range_name.max_range = 200.0;
+	range_name.field_of_view = 0.261799;
+	range_name.min_range = 0.02;
+	range_name.max_range = 200.0 * 0.01;
 }
  
 //Create three instances for range messages.
@@ -47,7 +47,7 @@ void setup() {
 void loop() {
 	for (uint8_t i = 0; i < SONAR_NUM; i++) { // Loop through each sensor and display results.
 		delay(PING_INTERVAL); 
-		range[i].range = sonar[i].ping_cm();
+		range[i].range = sonar[i].ping_cm() *0.01;
 		range[i].header.stamp = nh.now();
 	}
 		pub_range_left.publish(&range[0]);

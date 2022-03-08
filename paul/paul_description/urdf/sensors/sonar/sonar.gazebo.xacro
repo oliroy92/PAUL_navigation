@@ -13,8 +13,8 @@
                         <horizontal>
                             <samples>720</samples>
                             <resolution>1</resolution>
-                            <min_angle>-0.130900</min_angle> <!-- - 7.5 deg -->
-                            <max_angle>0.130900</max_angle>
+                            <min_angle>-0.261799</min_angle> <!-- - 7.5 deg -->
+                            <max_angle>0.261799</max_angle>
                         </horizontal>
                     </scan>
                     <range>

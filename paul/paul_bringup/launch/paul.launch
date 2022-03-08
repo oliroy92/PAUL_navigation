@@ -71,6 +71,7 @@
             </group>
             <include file="$(find imu)/launch/imu.launch"/>
             <include file="$(find lidar)/launch/lidar.launch"/>
+            <include file="$(find sonar)/launch/sonar.launch"/>
             <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization">
                 <rosparam command="load" file="$(find paul_control)/config/localization.yaml" />
             </node>
