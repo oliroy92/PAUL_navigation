@@ -48,16 +48,6 @@
       </inertial>
     </link>
 
-    <gazebo reference="wheel_${lr}_link">
-      <mu1 value="1.0"/>
-      <mu2 value="1.0"/>
-      <kp  value="10000000.0" />
-      <kd  value="1.0" />
-      <fdir1 value="1 0 0"/>
-      <material>Gazebo/Grey</material>
-      <turnGravityOff>false</turnGravityOff>
-    </gazebo>
-
     <joint name="wheel_${lr}_joint" type="continuous">
       <parent link="${parent}"/>
       <child link="wheel_${lr}_link"/>
@@ -68,14 +58,25 @@
     </joint>
 
     <!-- Transmission is important to link the joints and the controller -->
-    <transmission name="$wheel_${lr}_joint_trans">
+    <transmission name="wheel_${lr}_joint_trans">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="$wheel_${lr}_joint" />
-      <actuator name="$wheel_${lr}_joint_motor">
+      <joint name="wheel_${lr}_joint">
+        <hardwareInterface>EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="wheel_${lr}_joint_motor">
         <hardwareInterface>EffortJointInterface</hardwareInterface>
         <mechanicalReduction>1</mechanicalReduction>
       </actuator>
     </transmission>
-   
+
+    <gazebo reference="wheel_${lr}_link">
+      <mu1 value="1.0"/>
+      <mu2 value="1.0"/>
+      <kp  value="10000000.0" />
+      <kd  value="1.0" />
+      <fdir1 value="1 0 0"/>
+      <material>Gazebo/Grey</material>
+      <turnGravityOff>false</turnGravityOff>
+    </gazebo>
   </xacro:macro>
 </robot>

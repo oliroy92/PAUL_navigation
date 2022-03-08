@@ -184,7 +184,7 @@
   </xacro:lidar>
 
   <!-- D435 RGB-D Sensor -->
-  <xacro:sensor_d435 parent="base_link" use_nominal_extrinsics="${use_nominal_extrinsics}">
+  <xacro:sensor_d435 parent="base_link" use_nominal_extrinsics="${use_nominal_extrinsics}" name="realsense" topics_ns="realsense">
     <origin xyz="${realsense_pose_x} ${realsense_pose_y} ${realsense_pose_z}" rpy="${realsense_rot_x} ${realsense_rot_y} ${realsense_rot_z}"/>
   </xacro:sensor_d435>
 

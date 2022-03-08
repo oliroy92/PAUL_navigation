@@ -40,64 +40,62 @@
         </include>
     </group>
 
-    <group ns="$(arg robot_name)">
-        <!-- Load robot description and state publishers -->
-        <include file="$(find paul_description)/launch/upload.launch">
-            <arg name="arm" value="$(arg arm)"/>
-            <arg name="sim" value="$(arg sim)"/>
-        </include>
-        
-        <!-- ============================================== -->
-        <!-- ================= SIMULATION ================= -->
-        <!-- ============================================== -->
+    <!-- Load robot description and state publishers -->
+    <include file="$(find paul_description)/launch/upload.launch">
+        <arg name="arm" value="$(arg arm)"/>
+        <arg name="sim" value="$(arg sim)"/>
+    </include>
+    
+    <!-- ============================================== -->
+    <!-- ================= SIMULATION ================= -->
+    <!-- ============================================== -->
 
-        <group if="$(arg sim)">
-            <!-- Spawn paul into Gazebo -->
-            <node name="$(arg robot_name)_spawner" pkg="gazebo_ros" type="spawn_model" output="screen"
-                args="-urdf -param robot_description -model $(arg robot_name) -x -6.5 -y 0.0 -z 1.0"/>
-        </group>
+    <group if="$(arg sim)">
+        <!-- Spawn paul into Gazebo -->
+        <node name="$(arg robot_name)_spawner" pkg="gazebo_ros" type="spawn_model" output="screen"
+            args="-urdf -param robot_description -model $(arg robot_name) -x -6.5 -y 0.0 -z 1.0"/>
+    </group>
 
-        <!-- ============================================== -->
-        <!-- ================= REAL ROBOT ================= -->
-        <!-- ============================================== -->
+    <!-- ============================================== -->
+    <!-- ================= REAL ROBOT ================= -->
+    <!-- ============================================== -->
 
-        <group unless="$(arg sim)">
-            <!-- d435 camera -->
-            <group if="$(arg with_d435)">
-                <include file="$(find realsense2_camera)/launch/rs_camera.launch">
-                    <arg name="filters" value="pointcloud"/>
-                    <arg name="align_depth" value="true"/>
-                </include>
-            </group>
-            <include file="$(find imu)/launch/imu.launch"/>
-            <include file="$(find lidar)/launch/lidar.launch"/>
-            <include file="$(find sonar)/launch/sonar.launch"/>
-            <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization">
-                <rosparam command="load" file="$(find paul_control)/config/localization.yaml" />
-            </node>
-            <!-- Load controller configuration -->
-            <rosparam command="load" file="$(find paul_control)/config/control.yaml" />
-            <!-- Spawn controllers -->
-            <node name="base_controller_spawner" pkg="controller_manager" type="spawner" args="paul_joint_publisher paul_velocity_controller"/>
-        </group>
-
-        <!-- ============================================== -->
-        <!-- =================== COMMON =================== -->
-        <!-- ============================================== -->
-
-        <!-- TODO: add move_base and rtabmap in navigation package -->
-        <!-- Launching move_base to move robot around -->
-        <group if="$(arg start_rtabmap)">
-            <include file="$(find navigation)/launch/move_base.launch"/>
-        </group>
-
-        <!-- RTABMap -->
-        <group if="$(arg start_rtabmap)">
-            <include file="$(find slam)/launch/rtabmap.launch">
-                <arg name="rtabmapviz" value="$(arg rtabmapviz)"/>
-                <arg name="localization" value="$(arg localization)"/>
+    <group unless="$(arg sim)">
+        <!-- d435 camera -->
+        <group if="$(arg with_d435)">
+            <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+                <arg name="filters" value="pointcloud"/>
+                <arg name="align_depth" value="true"/>
+                <arg name="camera"      value="realsense"/>
             </include>
         </group>
+        <include file="$(find imu)/launch/imu.launch"/>
+        <include file="$(find lidar)/launch/lidar.launch"/>
+        <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization">
+            <rosparam command="load" file="$(find paul_control)/config/localization.yaml" />
+        </node>
+        <!-- Load controller configuration -->
+        <rosparam command="load" file="$(find paul_control)/config/control.yaml" />
+        <!-- Spawn controllers -->
+        <node name="base_controller_spawner" pkg="controller_manager" type="spawner" args="paul_joint_publisher paul_velocity_controller"/>
+    </group>
+
+    <!-- ============================================== -->
+    <!-- =================== COMMON =================== -->
+    <!-- ============================================== -->
+
+    <!-- TODO: add move_base and rtabmap in navigation package -->
+    
+
+    <!-- RTABMap -->
+    <group if="$(arg start_rtabmap)">
+        <!-- Launching move_base to move robot around -->
+        <include file="$(find paul_navigation)/launch/move_base.launch"/>
+        <!-- Launching rtabmap -->
+        <include file="$(find slam)/launch/rtabmap.launch">
+            <arg name="rtabmapviz" value="$(arg rtabmapviz)"/>
+            <arg name="localization" value="$(arg localization)"/>
+        </include>
     </group>
 
     <!-- Launch RVIZ -->
