@@ -7,7 +7,7 @@ Répertoire principal contenant les différents packages ROS pour le projet. On 
 L'installation se fait facilement à partir du code source. Avant de commencer, assurez-vous d'installer les packages requis.
 
 ```bash
-sudo apt install ros-melodic-realsense2-description ros-melodic-realsense2-camera ros-melodic-rtabmap-ros ros-melodic-move-base ros-melodic-rviz-imu-plugin ros-melodic-rplidar-ros ros-melodic-robot-localization
+sudo apt install ros-melodic-realsense2-description ros-melodic-realsense2-camera ros-melodic-rtabmap-ros ros-melodic-move-base ros-melodic-rviz-imu-plugin ros-melodic-rplidar-ros ros-melodic-robot-localization ros-melodic-moveit
 ```
 
 Par la suite, vous pouvez procéder à la création et à la compilation de votre environnement catkin.
@@ -39,6 +39,8 @@ Par la suite, vous pouvez procéder à la création et à la compilation de votr
     git clone https://github.com/Kinovarobotics/ros_kortex.git
     cd ros_kortex
     git checkout melodic-devel
+    cd ..
+    git clone https://github.com/pmc-paul/odrive_ros_control.git
     cd ../..
     rosdep install --from-paths src --ignore-src -y
     sudo python3 -m pip install conan
