@@ -9,9 +9,9 @@
     <turnGravityOff>false</turnGravityOff>
   </gazebo> 
 
+  <!-- wheel controller -->
   <gazebo>
     <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
-
       <rosDebugLevel>na</rosDebugLevel>
       <publishWheelTF>false</publishWheelTF>
       <robotNamespace>/</robotNamespace>
@@ -30,11 +30,10 @@
       <odometryFrame>odom</odometryFrame> 
       <odometryTopic>odom</odometryTopic> 
       <robotBaseFrame>base_footprint</robotBaseFrame>
-
     </plugin>
-
   </gazebo> 
 
+  <!-- rgb camera -->
   <gazebo reference="rgb1_link">
     <sensor type="camera" name="camera1">
       <update_rate>30.0</update_rate>
