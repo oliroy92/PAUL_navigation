@@ -84,6 +84,7 @@
   <xacro:include filename="$(find paul_description)/urdf/paul.gazebo.xacro" />
   <xacro:include filename="$(find paul_description)/urdf/sensors/lidar.urdf.xacro" />
   <xacro:include filename="$(find paul_description)/urdf/sensors/d435/_d435.urdf.xacro"/>
+  <xacro:include filename="$(find paul_description)/urdf/sensors/sonar/sonar.urdf.xacro"/>
   
   <!-- ============================================== -->
   <!-- ==================== BASE ==================== -->
@@ -186,6 +187,19 @@
   <xacro:sensor_d435 parent="base_link" use_nominal_extrinsics="${use_nominal_extrinsics}" name="realsense" topics_ns="realsense">
     <origin xyz="${realsense_pose_x} ${realsense_pose_y} ${realsense_pose_z}" rpy="${realsense_rot_x} ${realsense_rot_y} ${realsense_rot_z}"/>
   </xacro:sensor_d435>
+
+  <!-- Sonars -->
+  <xacro:sonar name="left" parent="base_link">
+    <origin xyz="${base_width} 0.1 ${base_height - 0.2}" rpy="0 0 0"/>
+  </xacro:sonar>
+
+  <xacro:sonar name="center" parent="base_link">
+    <origin xyz="${base_width} 0 ${base_height - 0.2}" rpy="0 0 0"/>
+  </xacro:sonar>
+
+  <xacro:sonar name="right" parent="base_link">
+    <origin xyz="${base_width} -0.1 ${base_height - 0.2}" rpy="0 0 0"/>
+  </xacro:sonar>
 
   <!-- ============================================== -->
   <!-- ==================== ARM ===================== -->

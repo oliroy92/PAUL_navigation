@@ -7,7 +7,7 @@ Répertoire principal contenant les différents packages ROS pour le projet. On 
 L'installation se fait facilement à partir du code source. Avant de commencer, assurez-vous d'installer les packages requis.
 
 ```bash
-sudo apt install ros-melodic-realsense2-description ros-melodic-realsense2-camera ros-melodic-rtabmap-ros ros-melodic-move-base ros-melodic-rviz-imu-plugin ros-melodic-rplidar-ros ros-melodic-robot-localization ros-melodic-moveit
+sudo apt install ros-melodic-realsense2-description ros-melodic-realsense2-camera ros-melodic-rtabmap-ros ros-melodic-move-base ros-melodic-rviz-imu-plugin ros-melodic-rplidar-ros ros-melodic-robot-localization ros-melodic-moveit ros-melodic-rosserial ros-melodic-rosserial-arduino
 ```
 
 Par la suite, vous pouvez procéder à la création et à la compilation de votre environnement catkin.
@@ -61,6 +61,12 @@ Par la suite, vous pouvez procéder à la création et à la compilation de votr
     ```bash
     cd ~/catkin_ws
     catkin_make
+    ```
+
+6. Upload sur l'Arduino Mega2560:
+
+    ```bash
+    catkin_make sonar_firmware_sonar-upload
     ```
 
 Si aucune erreur a lieu lors de la compilation, vous pouvez passer à la prochaine étape.
