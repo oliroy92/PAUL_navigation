@@ -11,8 +11,6 @@
 
   <exec_depend>odrive_bringup</exec_depend>
   <exec_depend>diff_drive_controller</exec_depend>
-  <exec_depend>joy</exec_depend>
-  <exec_depend>teleop_twist_joy</exec_depend>
 
   <export>
     <!-- Other tools can request additional information be placed here -->
