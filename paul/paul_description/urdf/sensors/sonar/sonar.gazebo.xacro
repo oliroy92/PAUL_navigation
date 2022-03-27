@@ -35,6 +35,10 @@
                 <plugin name="${sonar_name}_sonar_controller" filename="libgazebo_ros_range.so">
                     <topicName>/${topics_ns}/${sonar_name}</topicName>
                     <frameName>${reference_link}</frameName>
+                    <radiation>ultrasound</radiation>
+                    <updateRate>10</updateRate>
+                    <fov>0.05</fov>
+                    <gaussianNoise>0.0</gaussianNoise>
                 </plugin>
             </sensor>
         </gazebo>

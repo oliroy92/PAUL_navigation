@@ -85,7 +85,7 @@
     <!-- ============================================== -->
 
     <!-- TODO: add move_base and rtabmap in navigation package -->
-    
+    <include file="$(find teleop)/launch/teleop.launch"/>
 
     <!-- RTABMap -->
     <group if="$(arg start_rtabmap)">

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- parameters -->
+  <arg name="robot_name" default="/"/> 
+  <arg name="joy_dev" default="/dev/input/js0"/>
+
+  <arg name="keyboard" default="false"/>
+
+  <!-- joy node -->
+  <rosparam command="load" file="$(find teleop)/config/controller.yaml" />
+  <param name="joy_node/dev" value="$(arg joy_dev)" />
+
+  <node pkg="joy" type="joy_node" name="joy_node" />
+
+  <!-- teleop node -->
+  <group if="$(arg keyboard)">
+    <node name="teleop_twist_keyboard" type="teleop_twist_keyboard.py" pkg="teleop_twist_keyboard" output="screen"/>
+  </group>
+
+  <group unless="$(arg keyboard)">
+    <node pkg="teleop_twist_joy" type="teleop_node" name="teleop_twist_joy"/>
+  </group>
+</launch>
