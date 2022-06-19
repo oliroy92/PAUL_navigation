@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <launch>
+  <arg name="joy_dev" default="/dev/input/js0"/>
+
   <arg name="enable_joint0" default="true"/>
   <arg name="enable_joint1" default="true"/>
 
@@ -17,15 +19,17 @@
 
   <!-- load controllers -->
   <rosparam file="$(find paul_control)/config/propulsion.yaml" command="load"/>
-  <rosparam file="$(find paul_control)/config/elevation.yaml" command="load"/>
 
-  <!-- propulsion controller -->
+  <!-- elevation controller -->
   <node name="paul_controller_spawner" pkg="controller_manager" type="spawner"
       args="paul_joint_state_controller paul_base_controller" respawn="false" output="screen"/>
 
   <!-- start robot state publisher -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen"/>
 
+  <!-- start teleop node -->
+  <include file="$(find teleop)/launch/teleop.launch"/>
+  
 </launch>
 
 
