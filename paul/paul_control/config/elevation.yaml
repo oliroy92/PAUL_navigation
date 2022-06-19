@@ -2,32 +2,13 @@ paul_joint_state_controller:
   type: "joint_state_controller/JointStateController"
   publish_rate: 50
 
+paul_elevation_controller:
+  type: position_controllers/JointPositionController
+  joint: joint0
+  pid: {p: 100.0, i: 0.01, d: 10.0}
+
 paul_joint0_velocity_controller:
   type: velocity_controllers/JointVelocityController
   joint: joint0
   pid: {p: 100.0, i: 0.01, d: 10.0}
 
-  # Wheel separation and radius multipliers
-  wheel_separation_multiplier: 1.0 # TODO
-  wheel_radius_multiplier    : 0.1 # gear ratio
-
-  # Velocity commands timeout [s], default 0.5
-  cmd_vel_timeout: 0.25
-
-  # Base frame_id
-  base_frame_id: base_link 
-
-  # Velocity and acceleration limits
-  # Whenever a min_* is unspecified, default to -max_*
-  linear:
-    x:
-      has_velocity_limits    : true
-      max_velocity           : 2   # m/s
-      has_acceleration_limits: true
-      max_acceleration       : 0.8   # m/s^2
-  angular:
-    z:
-      has_velocity_limits    : true
-      max_velocity           : 1.0   # rad/s
-      has_acceleration_limits: true
-      max_acceleration       : 0.5   # rad/s^2
