@@ -26,5 +26,8 @@
   <!-- start robot state publisher -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen"/>
 
+  <!-- test script for stability -->
+  <node name="elevation_controller_test" pkg="paul_control" type="elevation_controller_test.py" output="screen"/>
+
 </launch>
 

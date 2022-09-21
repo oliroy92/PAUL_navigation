@@ -5,10 +5,3 @@ paul_joint_state_controller:
 paul_elevation_controller:
   type: position_controllers/JointPositionController
   joint: joint0
-  pid: {p: 100.0, i: 0.01, d: 10.0}
-
-paul_joint0_velocity_controller:
-  type: velocity_controllers/JointVelocityController
-  joint: joint0
-  pid: {p: 100.0, i: 0.01, d: 10.0}
-
