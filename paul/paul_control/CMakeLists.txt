@@ -5,7 +5,6 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   message_generation
   std_msgs
-  sensor_msgs
 )
 
 add_message_files(
@@ -16,6 +15,11 @@ add_message_files(
 add_service_files(
   FILES
   ElevationPosition.srv
+)
+
+generate_messages(
+  DEPENDENCIES
+  std_msgs
 )
 
 catkin_package(
