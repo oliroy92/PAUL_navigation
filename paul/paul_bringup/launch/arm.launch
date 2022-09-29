@@ -26,7 +26,7 @@
     <arg name="prefix" default=""/>
 
     <!-- Kortex API options -->
-    <arg name="ip_address" value="192.168.1.10"/>
+    <arg name="ip_address" value="192.168.2.10"/>
     <arg name="username" value="admin"/>
     <arg name="password" value="admin"/>
     <arg name="api_rpc_timeout_ms" value="2000"/> <!--milliseconds-->
@@ -65,10 +65,12 @@
 
     <!-- Start Gazebo outside of namespace -->
     <group if="$(arg sim)">
-        <include file="$(find paul_gazebo)/launch/world.launch">
-            <arg name="world" value="$(arg world)"/>
-            <arg name="gui" value="$(arg gazebo_gui)"/>
+        <include file="$(find kortex_gazebo)/launch/spawn_kortex_robot.launch">
+            <!--<arg name="world" value="$(arg world)"/>
+            <arg name="gui" value="$(arg gazebo_gui)"/>-->
             <arg name="paused" value="true"/>
+            <arg name="arm" value="$(arg arm)"/>
+            <arg name="robot_name" value="$(arg robot_name)_gazebo"/>
         </include>
     </group>
 
@@ -242,6 +244,7 @@
     </group>
 
     <!-- Start RViz -->
-    <node name="rviz" pkg="rviz" type="rviz" output="log" args="-f base_link -d $(find paul_bringup)/config/arm_cfg.rviz" if="$(arg start_rviz)"/> 
+    <node name="rviz" pkg="rviz" type="rviz" output="log" args="-f base_link -d $(find paul_bringup)/config/arm_cfg.rviz" if="$(arg start_rviz)"/>
+    <!--include file="$(find gen3_lite_gen3_lite_2f_move_it_config)/launch/moveit_rviz.launch"/-->
   
 </launch>
