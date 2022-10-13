@@ -13,10 +13,10 @@ class ElevationCommandTester:
 		msg = Float64()
 
 		top = 0
-		mid = 90 * 2 * math.pi
-		bot = 180 * 2 * math.pi
+		mid = 450
+		bot = 900
 
-		sequence = [bot, top, mid, bot, mid, top]
+		sequence = [bot, top] #, mid, bot, mid, top]
 
 		rospy.sleep(5)
 		for i in range(30):

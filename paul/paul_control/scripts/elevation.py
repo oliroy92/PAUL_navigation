@@ -13,11 +13,11 @@ odrv0 = odrive.find_any()
 odrv0.axis0.motor.config.current_lim = 25
 
 # controller
-odrv0.axis0.controller.config.vel_limit = 100    # turn/s
+odrv0.axis0.controller.config.vel_limit = 75    # turn/s
 
-odrv0.axis0.trap_traj.config.vel_limit = 75	# slighty lower than controller config
-odrv0.axis0.trap_traj.config.accel_limit = 25
-odrv0.axis0.trap_traj.config.decel_limit = 25
+odrv0.axis0.trap_traj.config.vel_limit = 50	# slighty lower than controller config
+odrv0.axis0.trap_traj.config.accel_limit = 15
+odrv0.axis0.trap_traj.config.decel_limit = 15
 odrv0.axis0.controller.config.input_mode = INPUT_MODE_TRAP_TRAJ
 
 # gpio config
