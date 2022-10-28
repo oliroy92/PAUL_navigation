@@ -9,3 +9,5 @@ git pull
 cd /home/jetson/catkin_ws
 
 source devel/setup.bash
+
+catkin_make
