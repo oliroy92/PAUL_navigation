@@ -1,9 +1,30 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(paul_control)
 
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED COMPONENTS
+  rospy
+  message_generation
+  std_msgs
+)
 
-catkin_package()
+add_message_files(
+  FILES
+  Elevation.msg
+)
+
+add_service_files(
+  FILES
+  ElevationPosition.srv
+)
+
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
+
+catkin_package(
+  CATKIN_DEPENDS message_runtime
+)
 
 include_directories(
   ${catkin_INCLUDE_DIRS}
