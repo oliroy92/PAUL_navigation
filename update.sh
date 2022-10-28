@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd /home/jetson/catkin_ws/src/paul_ros
+
 git fetch
 git reset --hard origin/main
 
