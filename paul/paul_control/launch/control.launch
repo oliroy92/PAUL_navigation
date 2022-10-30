@@ -1,30 +1,17 @@
 <?xml version="1.0"?>
 <launch>
-  <arg name="enable_joint0" default="true"/>
-  <arg name="enable_joint1" default="true"/>
-
-  <arg name="yaml_file" default="$(find odrive_bringup)/config/hardware.yaml"/>
-
-  <!-- start control node -->
-  <node pkg="odrive_hardware_interface" type="odrive_control_node" name="odrive_control_node" output="screen">  
-      <param name="interface" value="velocity"/>
-      <param name="yaml_file" value="$(arg yaml_file)"/>
+  <!-- start odrive interface -->
+  <node pkg="odrive_hardware_interface" type="odrive_control_node" name="propulsion_odrive_control_node" output="screen">  
+      <param name="yaml_file" value="$(find paul_control)/config/odrive.yaml"/>
   </node>
 
-  <!-- load robot description -->
-  <param name="robot_description" command="$(find xacro)/xacro $(find odrive_description)/urdf/odrive.urdf.xacro
-    enable_joint0:=$(arg enable_joint0) enable_joint1:=$(arg enable_joint1)"/>
-
   <!-- load controllers -->
-  <rosparam file="$(find paul_control)/config/propulsion.yaml" command="load"/>
-  <rosparam file="$(find paul_control)/config/elevation.yaml" command="load"/>
+  <rosparam file="$(find paul_control)/config/control.yaml" command="load"/>
 
-  <!-- propulsion controller -->
+  <!-- start all controllers -->
   <node name="paul_controller_spawner" pkg="controller_manager" type="spawner"
-      args="paul_joint_state_controller paul_base_controller" respawn="false" output="screen"/>
-
-  <!-- start robot state publisher -->
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen"/>
+    args="paul_joint_state_controller paul_elevation_controller paul_base_controller" 
+    respawn="false" output="screen"/>
 
 </launch>
 
