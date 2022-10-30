@@ -2,11 +2,11 @@
 
 teleop_twist_joy:
   axis_linear: 1  # Left thumb stick vertical
-  scale_linear: 1 # m/s
-  scale_linear_turbo: 2 # m/s
+  scale_linear: 0.5 # m/s
+  scale_linear_turbo: 1 # m/s
 
   axis_angular: 3  # 0 for left thumb stick horizontal, 3 for right thumb stick horizontal
-  scale_angular: 1    # rad/s
+  scale_angular: 0.75    # rad/s
 
   enable_button: 4  # Left trigger button
   enable_turbo_button: 5  # Right trigger button

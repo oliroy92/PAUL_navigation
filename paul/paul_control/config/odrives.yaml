@@ -1,0 +1,31 @@
+sensors:
+  odrv0:
+    serial_number: 207c34965748
+
+  odrv1:
+    serial_number: 207c34865748
+
+joints:
+  wheel_L_joint:
+    serial_number: 207c34965748
+    axis: 0
+    enable_watchdog: 0
+    watchdog_timeout: 0.1
+    requires_homing: 0
+    control_mode: velocity
+
+  wheel_R_joint:
+    serial_number: 207c34965748
+    axis: 1
+    enable_watchdog: 0
+    watchdog_timeout: 0.1
+    requires_homing: 0
+    control_mode: velocity
+
+  elevation_motor_joint:
+    serial_number: 207c34865748
+    axis: 0
+    enable_watchdog: 0
+    watchdog_timeout: 0.1
+    requires_homing: 1
+    control_mode: position
