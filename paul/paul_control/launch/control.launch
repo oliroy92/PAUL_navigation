@@ -2,7 +2,7 @@
 <launch>
   <!-- start odrive interface -->
   <node pkg="odrive_hardware_interface" type="odrive_control_node" name="propulsion_odrive_control_node" output="screen">  
-      <param name="yaml_file" value="$(find paul_control)/config/odrives.yaml"/>
+      <param name="yaml_file" value="$(find paul_control)/config/odrive.yaml"/>
   </node>
 
   <!-- load controllers -->
