@@ -62,7 +62,7 @@
 
     <group unless="$(arg sim)">
         <!-- d435 camera -->
-        <group if="$(arg with_d435)">
+        <!-- <group if="$(arg with_d435)">
             <include file="$(find realsense2_camera)/launch/rs_camera.launch">
                 <arg name="filters" value="pointcloud"/>
                 <arg name="align_depth" value="true"/>
@@ -73,11 +73,12 @@
         <include file="$(find lidar)/launch/lidar.launch"/>
         <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization">
             <rosparam command="load" file="$(find paul_control)/config/localization.yaml" />
-        </node>
-        <!-- Load controller configuration -->
-        <rosparam command="load" file="$(find paul_control)/config/control.yaml" />
-        <!-- Spawn controllers -->
-        <node name="base_controller_spawner" pkg="controller_manager" type="spawner" args="paul_joint_publisher paul_velocity_controller"/>
+        </node> -->
+
+        <!-- NOTE: localization and the base controller will be launched in control.launch -->
+        <!-- TODO: replace line 74 to 80 -->
+        <include file="$(find paul_control)/launch/control.launch"/>
+    
     </group>
 
     <!-- ============================================== -->
