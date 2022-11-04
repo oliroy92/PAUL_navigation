@@ -16,28 +16,28 @@
   <xacro:arg name="gripper" default=""/>
 
   <!-- Constant for paul base -->
-  <xacro:property name="mass" 			value="76.7" />
-  <xacro:property name="base_width" 		value="0.698" />
-  <xacro:property name="base_height"		value="1.043" /> <!-- Without wheels -->
-  <xacro:property name="base_length"		value="0.9652" />
+  <xacro:property name="mass" 			value="20.0" />
+  <xacro:property name="base_width" 		value="0.64135" />
+  <xacro:property name="base_height"		value="0.85027" /> <!-- Without wheels -->
+  <xacro:property name="base_length"		value="1.1303" />
   <xacro:property name="base_pose_z"		value="${ground_to_base_z}" />
-  <xacro:property name="wheel_to_base_z" 	value="0.09" />
-  <xacro:property name="ground_to_base_z"	value="0.165" />
+  <xacro:property name="wheel_to_base_z" 	value="0.08827" />
+  <xacro:property name="ground_to_base_z"	value="${wheel_to_base_z + wheel_radius}" />
 
   <!-- Common wheels parameters -->
-  <xacro:property name="wheel_diameter"		value="0.1524" />
+  <xacro:property name="wheel_diameter"		value="0.14732" />
   <xacro:property name="wheel_radius"		value="${wheel_diameter/2}"/>
-  <xacro:property name="wheel_thickness"	value="0.0254"/>
-  <xacro:property name="wheel_mass"		value="0.263"/>
-  <xacro:property name="front_to_rear_wheels_x"	value="0.77"/>
-  <xacro:property name="front_right_left_y"	value="0.245"/>
-  <xacro:property name="rear_right_left_y"	value="0.22938"/>
+  <xacro:property name="wheel_thickness"	value="0.03"/>
+  <xacro:property name="wheel_mass"		value="0.200"/>
+  <xacro:property name="front_to_rear_wheels_x"	value="0.84056"/>
+  <xacro:property name="front_right_left_y"	value="0.3302"/>
+  <xacro:property name="rear_right_left_y"	value="0.5715"/>
 
   <!-- Constant for driven wheels -->
     <!-- Right wheel parameters -->
-  <xacro:property name="wheel_R_pose_x"		value="-0.294"/>
+  <xacro:property name="wheel_R_pose_x"		value="${-front_to_rear_wheels_x/2}"/>
   <xacro:property name="wheel_R_pose_y"		value="${-rear_right_left_y/2}"/> 
-  <xacro:property name="wheel_R_pose_z"		value="${-wheel_to_base_z}"/>
+  <xacro:property name="wheel_R_pose_z"		value="${-wheel_radius}"/>
   <xacro:property name="wheel_R_rot_x"   	value="0.0000"/>
   <xacro:property name="wheel_R_rot_y"   	value="0.0000"/>
   <xacro:property name="wheel_R_rot_z"   	value="0.0000"/>
@@ -51,9 +51,9 @@
 
   <!-- Constant for caster wheels -->
     <!-- Right caster wheel parameters -->
-  <xacro:property name="caster_R_pose_x"	value="0.476"/>
+  <xacro:property name="caster_R_pose_x"	value="${front_to_rear_wheels_x/2}"/>
   <xacro:property name="caster_R_pose_y"	value="${-front_right_left_y/2}"/> 
-  <xacro:property name="caster_R_pose_z"	value="-0.09366"/>
+  <xacro:property name="caster_R_pose_z"	value="${-wheel_radius}"/>
   <xacro:property name="caster_R_rot_x"   	value="0.0000"/>
   <xacro:property name="caster_R_rot_y"   	value="0.0000"/>
   <xacro:property name="caster_R_rot_z"   	value="0.0000"/>
@@ -66,9 +66,9 @@
   <xacro:property name="caster_L_rot_z"		value=" ${caster_R_rot_z}"/>
 
   <!-- RGBD sensor parameters -->
-  <xacro:property name="realsense_pose_x" value="0.546" />
+  <xacro:property name="realsense_pose_x" value="${base_width}" />
   <xacro:property name="realsense_pose_y" value="0.0" />
-  <xacro:property name="realsense_pose_z" value="0.6246" />
+  <xacro:property name="realsense_pose_z" value="${base_height}" />
   <xacro:property name="use_nominal_extrinsics" value="$(arg sim)"/>
   <xacro:property name="realsense_rot_x" value="0.0" />
   <xacro:property name="realsense_rot_y" value="0.0" />
@@ -151,7 +151,7 @@
   <joint name="baseIMU" type="fixed">
     <parent link="base_link"/>
     <child link="imu_link"/>
-    <origin xyz="0.1651 0 0.29255" rpy="0 0 0"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
   </joint>
 
   <!-- Cameras -->
@@ -180,7 +180,7 @@
 
   <!-- Lidar sensor -->
   <xacro:lidar parent="base_link">
-    <origin xyz="0.546 0 -0.001" rpy="0 0 0" />
+    <origin xyz="0.50614 0 0.1" rpy="0 0 0" />
   </xacro:lidar>
 
   <!-- D435 RGB-D Sensor -->
