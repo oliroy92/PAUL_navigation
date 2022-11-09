@@ -7,16 +7,6 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
 )
 
-add_message_files(
-  FILES
-  Elevation.msg
-)
-
-add_service_files(
-  FILES
-  ElevationPosition.srv
-)
-
 generate_messages(
   DEPENDENCIES
   std_msgs
