@@ -62,7 +62,7 @@
 
     <group unless="$(arg sim)">
         <!-- d435 camera -->
-        <!-- <group if="$(arg with_d435)">
+        <group if="$(arg with_d435)">
             <include file="$(find realsense2_camera)/launch/rs_camera.launch">
                 <arg name="filters" value="pointcloud"/>
                 <arg name="align_depth" value="true"/>
@@ -71,7 +71,7 @@
         </group>
         <include file="$(find imu)/launch/imu.launch"/>
         <include file="$(find lidar)/launch/lidar.launch"/>
-        <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization">
+        <!-- <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization">
             <rosparam command="load" file="$(find paul_control)/config/localization.yaml" />
         </node> -->
 
