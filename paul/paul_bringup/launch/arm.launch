@@ -8,15 +8,15 @@
     <arg name="sim" default="false"/>
 
     <!-- Kinova arm parameters -->
-    <arg name="arm" default="gen3_lite"/>
+    <arg name="arm" default="gen3"/>
 
-    <arg name="dof" value="7" if="$(eval arg('arm') == 'gen3')"/> 
+    <arg name="dof" value="6" if="$(eval arg('arm') == 'gen3')"/> 
     <arg name="dof" value="6" if="$(eval arg('arm') == 'gen3_lite')"/>
 
     <arg name="vision" value="true" if="$(eval arg('arm') == 'gen3')"/> 
     <arg name="vision" value="false" if="$(eval arg('arm') == 'gen3_lite')"/>
 
-    <arg name="gripper" value="" if="$(eval arg('arm') == 'gen3')"/> <!-- robotiq_2f_85 or robotiq_2f_140 -->
+    <arg name="gripper" value="robotiq_2f_85" if="$(eval arg('arm') == 'gen3')"/> <!-- robotiq_2f_85 or robotiq_2f_140 -->
     <arg name="gripper" value="gen3_lite_2f" if="$(eval arg('arm') == 'gen3_lite')"/> 
 
     <arg name="use_hard_limits" value="false"/>
@@ -47,9 +47,9 @@
     <arg name="world" value="testbench" unless="$(arg simplified_world)"/>
 
     <arg name="x0" value="0"/>
-    <arg name="y0" value="-0.5" if="$(arg simplified_world)"/> 
-    <arg name="y0" value="-0.75" unless="$(arg simplified_world)"/>
-    <arg name="z0" value="0.5"/>
+    <arg name="y0" value="0" if="$(arg simplified_world)"/> 
+    <arg name="y0" value="0" unless="$(arg simplified_world)"/>
+    <arg name="z0" value="0"/>
 
     <arg name="gazebo_gui" default="true"/>
 
@@ -65,12 +65,10 @@
 
     <!-- Start Gazebo outside of namespace -->
     <group if="$(arg sim)">
-        <include file="$(find kortex_gazebo)/launch/spawn_kortex_robot.launch">
-            <!--<arg name="world" value="$(arg world)"/>
-            <arg name="gui" value="$(arg gazebo_gui)"/>-->
+        <include file="$(find kortex_gazebo)/launch/start_gazebo.launch">
+            <arg name="gui" value="true"/>
+            <arg name="use_sim_time" value="true"/>
             <arg name="paused" value="true"/>
-            <arg name="arm" value="$(arg arm)"/>
-            <arg name="robot_name" value="$(arg robot_name)_gazebo"/>
         </include>
     </group>
 

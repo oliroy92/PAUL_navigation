@@ -1,4 +1,10 @@
 <?xml version="1.0" ?>
 <launch>
   <include file="$(find rplidar_ros)/launch/rplidar_a3.launch" />
+	
+	<node name="laser_filter" pkg="laser_filters" type="scan_to_scan_filter_chain" output="screen">
+      <remap from="scan" to="scan" />
+      <rosparam command="load" file="$(find lidar)/config/scan_filter_chain.yaml" />
+	</node>
+
 </launch>
