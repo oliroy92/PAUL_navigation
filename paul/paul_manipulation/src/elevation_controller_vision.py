@@ -23,7 +23,7 @@ class ElevationCommandVision:
   def __init__(self):
     self.sub = rospy.Subscriber("/joint_states", JointState, self.GetODriveActualPosition)
     self.pub = rospy.Publisher('/paul_elevation_controller/command', Float64, queue_size=1)
-    self.service = rospy.Service('elevation_controller_vision', ElevationPosition, self.PositionExecutionCallback)
+    self.service = rospy.Service('/elevation_controller_vision', ElevationPosition, self.PositionExecutionCallback)
     
     self.lastPosition = -50
     print("Ready to receive position")
@@ -35,7 +35,6 @@ class ElevationCommandVision:
     print("Received this req: ", req)
 
     cmd = Float64()
-
 
     if(req.level.data == Elevation.BOTTOM): #0
       cmd.data = MINIMAL_POSITION

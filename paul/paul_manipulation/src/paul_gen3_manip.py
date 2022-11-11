@@ -57,32 +57,45 @@ from std_msgs.msg import Float64
 from sensor_msgs.msg import JointState
 from paul_manipulation.srv import ArmPosition, ArmPositionResponse
 from paul_manipulation.srv import ElevationPosition, ElevationPositionResponse
+from paul_manipulation.srv import ElevationVision, ElevationVisionResponse
+
 from paul_manipulation.msg import Elevation
 
 
 
-SCAN_POSE_RIGHT = (0, 0, pi/2, pi/4, 0, pi/2)
-SCAN_POSE_LEFT  = (0, 0, pi/2, pi/4, 0, pi/2)
-BACK_POSE       = (0, 0, pi/2, pi/4, 0, pi/2)
-DROP_POSE       = (0, 0, pi/2, pi/4, 0, pi/2)
+SCAN_POSE_1_RIGHT = (0, 0, pi/2, pi/4, 0, pi/2)
+SCAN_POSE_2_RIGHT = (0, 0, pi/2, pi/4, 0, pi/2)
+SCAN_POSE_3_RIGHT = (0, 0, pi/2, pi/4, 0, pi/2)
+SCAN_POSE_4_RIGHT = (0, 0, pi/2, pi/4, 0, pi/2)
+SCAN_POSE_5_RIGHT = (0, 0, pi/2, pi/4, 0, pi/2)
+
+SCAN_POSE_1_LEFT  = (0, 0, pi/2, pi/4, 0, pi/2)
+SCAN_POSE_2_LEFT  = (0, 0, pi/2, pi/4, 0, pi/2)
+SCAN_POSE_3_LEFT  = (0, 0, pi/2, pi/4, 0, pi/2)
+SCAN_POSE_4_LEFT  = (0, 0, pi/2, pi/4, 0, pi/2)
+SCAN_POSE_5_LEFT  = (0, 0, pi/2, pi/4, 0, pi/2)
+
+BACK_POSE         = (0, 0, pi/2, pi/4, 0, pi/2)
+DROP_POSE         = (0, 0, pi/2, pi/4, 0, pi/2)
 
 
 
 class PAUL_manipulator(object):
   """PAUL_manipulator"""
   def __init__(self):
-
     # Initialize the node
     super(PAUL_manipulator, self).__init__()
     moveit_commander.roscpp_initialize(sys.argv)
     rospy.init_node('PAUL_manipulator')
     rospy.Subscriber('/arm_position_request', geometry_msgs.msg.Pose, self.request_pose_callback) 
 
-    self.elevationService = rospy.Service('elevation_controller_vision', ElevationPosition, self.elevationPositionCallback)
+    self.elevationService = rospy.Service('vision_elevation_first', ElevationVision, self.elevationPositionCallback)
     self.armService = rospy.Service('arm_position', ArmPosition, self.armPositionCallback)
 
     self.height = 0
     self.subHeight = rospy.Subscriber("/joint_states", JointState, self.GetHeightElevation)
+
+    self.zones_list = []
 
 
     try:
@@ -96,8 +109,8 @@ class PAUL_manipulator(object):
 
       # Create the MoveItInterface necessary objects
       arm_group_name = "arm"
-      self.robot = moveit_commander.RobotCommander("robot_description")
-      # self.scene = moveit_commander.PlanningSceneInterface()
+      self.robot = moveit_commander.RobotCommander("my_gen3/robot_description")
+      #self.scene = moveit_commander.PlanningSceneInterface()
       print("namespace: " + str(rospy.get_namespace()))
       self.scene = moveit_commander.PlanningSceneInterface(ns=rospy.get_namespace())
       self.arm_group = moveit_commander.MoveGroupCommander(arm_group_name, ns=rospy.get_namespace())
@@ -339,43 +352,81 @@ class PAUL_manipulator(object):
 
 
   # For moving the elevation system with the arm in the scan position (safe position)
-  def elevationPositionCallback(self, msg): 
-    #if msg.level.data < 0 or msg.level.data > 2:
-    if msg.level < 0 or msg.level > 2:
-      return ElevationPositionResponse(False)
+  def elevationPositionCallback(self, msg):
+    print("************") 
+    
+    if msg.level.data < 0 or msg.level.data > 2:
+      return ElevationVisionResponse(False)
 
-    robot = PAUL_manipulator()
-    success = robot.is_init_success
-    try:
-      rospy.delete_param("/kortex_examples_test_results/moveit_general_python")
-    except:
-      return ElevationPositionResponse(False)
+    # success = self.is_init_success
+    # try:
+    #   rospy.delete_param("/kortex_examples_test_results/moveit_general_python")
+    # except:
+    #   return ElevationVisionResponse(False)
 
-    # Create the curtain for the whole cart
-    robot.add_box(0.0,-0.25,0.0, 1.0, (0.7, 0.2, 1.5), box_name='cartCurtain')
+    # # Create the curtain for the whole cart
+    # self.add_box(0.0,-0.25,0.0, 5.0, (0.7, 0.2, 1.5), box_name='Cart_curtain')
 
-    if success:
-      rospy.loginfo("Reaching Scan Pose...")
-      success &= self.reach_joint_angles(SCAN_POSE_RIGHT, tolerance=0.01)
-      print(success)
 
-    # Remove the curtain
-    robot.remove_box('cartCurtain')
+    # Check for error in request
+    if (msg.direction != "right" and msg.direction != "left"):
+      rospy.loginfo("Direction needs to be left or right, instead: " + msg.direction)
+      return ElevationVisionResponse(False)
+
+    if (msg.shelf < 1 or msg.shelf > 5):
+      rospy.loginfo("Shelf number is not between 1 and 5, instead: " + str(msg.shelf))
+      return ElevationVisionResponse(False)
+
+    # Associate the good position for the scan
+    if (msg.direction == "right"):
+      if (msg.shelf == 1):
+        scanPosition = SCAN_POSE_1_RIGHT
+      elif (msg.shelf == 2):
+        scanPosition = SCAN_POSE_2_RIGHT
+      elif (msg.shelf == 3):
+        scanPosition = SCAN_POSE_3_RIGHT
+      elif (msg.shelf == 4):
+        scanPosition = SCAN_POSE_4_RIGHT
+      elif (msg.shelf == 5):
+        scanPosition = SCAN_POSE_5_RIGHT
+    elif (msg.direction == "left"):
+      if (msg.shelf == 1):
+        scanPosition = SCAN_POSE_1_LEFT
+      elif (msg.shelf == 2):
+        scanPosition = SCAN_POSE_2_LEFT
+      elif (msg.shelf == 3):
+        scanPosition = SCAN_POSE_3_LEFT
+      elif (msg.shelf == 4):
+        scanPosition = SCAN_POSE_4_LEFT
+      elif (msg.shelf == 5):
+        scanPosition = SCAN_POSE_5_LEFT
+
+
+    # if success:
+    #   rospy.loginfo("Reaching Scan Pose...")
+    #   success &= self.reach_joint_angles(scanPosition, tolerance=0.01)
+    #   print(success)
+
+    # # Remove the curtain
+    # self.remove_box('Cart_curtain')
 
     # Call service elevation_controller_vision
-    rospy.wait_for_service('elevation_controller_vision')
+    print("!!!!!!!!!!")
+    rospy.wait_for_service('/elevation_controller_vision')
+    print("Waiting succeeded")
     try:
       elevationServiceResponse = rospy.ServiceProxy('/elevation_controller_vision', ElevationPosition)
       elevation = Elevation()
-      elevation.data = msg
+      elevation.data = msg.level.data
       resp1 = elevationServiceResponse(elevation)
       print("Service answer: " )
       print(resp1)
     except rospy.ServiceException as e:
       print("Service call failed: %s"%e)
-      return ElevationPositionResponse(False)
+      return ElevationVisionResponse(False)
 
-    return ElevationPositionResponse(True)
+    print("*************************")
+    return ElevationVisionResponse(resp1.success)
 
 
 
@@ -384,14 +435,27 @@ class PAUL_manipulator(object):
 
   # For moving the arm to the requested position
   def armPositionCallback(self, pose_msg):
-    # Height of elevation system
+
+    for i in range(self.zones_list.count()):
+      self.remove_box(self.zones_list[i])
+    self.zones_list.clear()
+
+    # Adding the fixed box which protect the arm from the elevation system in steel
+    self.add_box(0.0, 0.0, -0.1075, 1.0, (0.35, 0.1, 0.18), box_name="Elevation_system_steel")
+    self.zones_list.append("Elevation_system_steel")
 
     if self.height > 700:
-      self.add_box()
+      self.add_box(0.0, 0.17, 1.02, 1.0, (0.65, 0.2, 1.35), box_name="Cart_high")
+      self.zones_list.append("Cart_high")
     elif self.height > 300:
-      self.add_box()
+      self.add_box(0.0, 0.17, 0.7225, 1.0, (0.65, 0.2, 1.35), box_name="Cart_middle")
+      self.zones_list.append("Cart_middle")
     else:
-      self.add_box()
+      self.add_box(0.0, 0.03, -0.21, 1.0, (0.65, 0.18, 0.4), box_name="Wheels")
+      self.add_box(0.0, 0.17, 0.4175, 1.0, (0.65, 0.2, 1.35), box_name="Cart_low")
+      self.zones_list.append("Wheels")
+      self.zones_list.append("Cart_low")
+
 
     rospy.loginfo("Reaching requested Z-Pose..." + str(pose_msg))
     actual_pose = self.get_cartesian_pose()
@@ -416,7 +480,7 @@ class PAUL_manipulator(object):
 
     rospy.loginfo("Request is a " + str(success))
 
-    return ArmPositionResponse(True)
+    return ArmPositionResponse(success)
 
 
 
@@ -424,8 +488,6 @@ class PAUL_manipulator(object):
 def main():
     robot = PAUL_manipulator()
     # robot.add_box(0.0,0.0,0.0, 1.0, (0.2, 0.2, 0.0), box_name='table')
-    robot.remove_box('table')
-    robot.remove_box()
     # robot.add_box(0.0, -0.050, 0.10, 1.0, (0.4, 0.01, 0.2))
     # try:
     #   robot.remove_box()

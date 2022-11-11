@@ -66,7 +66,7 @@
     <!-- Start Gazebo outside of namespace -->
     <group if="$(arg sim)">
         <include file="$(find kortex_gazebo)/launch/start_gazebo.launch">
-            <arg name="gui" value="true"/>
+            <arg name="gui" value="$(arg gazebo_gui)"/>
             <arg name="use_sim_time" value="true"/>
             <arg name="paused" value="true"/>
         </include>

@@ -1,3 +1,5 @@
 Elevation level
+uint8 shelf
+string direction
 ---
 bool success
