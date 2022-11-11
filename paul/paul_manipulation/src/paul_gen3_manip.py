@@ -358,14 +358,14 @@ class PAUL_manipulator(object):
     if msg.level.data < 0 or msg.level.data > 2:
       return ElevationVisionResponse(False)
 
-    # success = self.is_init_success
+    success = self.is_init_success
     # try:
     #   rospy.delete_param("/kortex_examples_test_results/moveit_general_python")
     # except:
     #   return ElevationVisionResponse(False)
 
-    # # Create the curtain for the whole cart
-    # self.add_box(0.0,-0.25,0.0, 5.0, (0.7, 0.2, 1.5), box_name='Cart_curtain')
+    # Create the curtain for the whole cart
+    self.add_box(0.0,-0.25,0.0, 5.0, (0.7, 0.2, 1.5), box_name='Cart_curtain')
 
 
     # Check for error in request
@@ -402,13 +402,13 @@ class PAUL_manipulator(object):
         scanPosition = SCAN_POSE_5_LEFT
 
 
-    # if success:
-    #   rospy.loginfo("Reaching Scan Pose...")
-    #   success &= self.reach_joint_angles(scanPosition, tolerance=0.01)
-    #   print(success)
+    if success:
+      rospy.loginfo("Reaching Scan Pose...")
+      success &= self.reach_joint_angles(*scanPosition, tolerance=0.01)
+      print(success)
 
-    # # Remove the curtain
-    # self.remove_box('Cart_curtain')
+    # Remove the curtain
+    self.remove_box('Cart_curtain')
 
     # Call service elevation_controller_vision
     print("!!!!!!!!!!")
