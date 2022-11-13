@@ -62,6 +62,19 @@ from paul_manipulation.srv import ElevationVision, ElevationVisionResponse
 from paul_manipulation.msg import Elevation
 
 
+# Calling arm position from terminal
+"""
+rosservice call /my_gen3/arm_position "pose:
+  position: 
+    x: 0.573351668066
+    y: 0.00135417296048
+    z: 0.423615402123
+  orientation: 
+    x: 0.50016774096
+    y: 0.499762534748
+    z: 0.500237426704
+    w: 0.499832128509"
+"""
 
 SCAN_POSE_1_RIGHT = (0, 0, pi/2, pi/4, 0, pi/2)
 SCAN_POSE_2_RIGHT = (0, 0, pi/2, pi/4, 0, pi/2)
@@ -77,7 +90,6 @@ SCAN_POSE_5_LEFT  = (0, 0, pi/2, pi/4, 0, pi/2)
 
 BACK_POSE         = (0, 0, pi/2, pi/4, 0, pi/2)
 DROP_POSE         = (0, 0, pi/2, pi/4, 0, pi/2)
-
 
 
 class PAUL_manipulator(object):
@@ -281,6 +293,8 @@ class PAUL_manipulator(object):
     rospy.loginfo("Reaching requested Z-Pose..." + str(pose_msg))
     
     actual_pose = self.get_cartesian_pose()
+    print("******Actual position******")
+    print(actual_pose)
     actual_pose.position.y += pose_msg.position.y
     actual_pose.position.z += pose_msg.position.z
     
@@ -352,9 +366,7 @@ class PAUL_manipulator(object):
 
 
   # For moving the elevation system with the arm in the scan position (safe position)
-  def elevationPositionCallback(self, msg):
-    print("************") 
-    
+  def elevationPositionCallback(self, msg):    
     if msg.level.data < 0 or msg.level.data > 2:
       return ElevationVisionResponse(False)
 
@@ -364,10 +376,6 @@ class PAUL_manipulator(object):
     # except:
     #   return ElevationVisionResponse(False)
 
-    # Create the curtain for the whole cart
-    self.add_box(0.0,-0.25,0.0, 5.0, (0.7, 0.2, 1.5), box_name='Cart_curtain')
-
-
     # Check for error in request
     if (msg.direction != "right" and msg.direction != "left"):
       rospy.loginfo("Direction needs to be left or right, instead: " + msg.direction)
@@ -376,6 +384,9 @@ class PAUL_manipulator(object):
     if (msg.shelf < 1 or msg.shelf > 5):
       rospy.loginfo("Shelf number is not between 1 and 5, instead: " + str(msg.shelf))
       return ElevationVisionResponse(False)
+
+    # Create the curtain for the whole cart
+    self.add_box(0.0,-0.25,0.0, 5.0, (0.7, 0.2, 1.5), box_name='Cart_curtain')
 
     # Associate the good position for the scan
     if (msg.direction == "right"):
@@ -411,7 +422,7 @@ class PAUL_manipulator(object):
     self.remove_box('Cart_curtain')
 
     # Call service elevation_controller_vision
-    print("!!!!!!!!!!")
+    print("Calling service")
     rospy.wait_for_service('/elevation_controller_vision')
     print("Waiting succeeded")
     try:
@@ -425,7 +436,6 @@ class PAUL_manipulator(object):
       print("Service call failed: %s"%e)
       return ElevationVisionResponse(False)
 
-    print("*************************")
     return ElevationVisionResponse(resp1.success)
 
 
@@ -436,9 +446,10 @@ class PAUL_manipulator(object):
   # For moving the arm to the requested position
   def armPositionCallback(self, pose_msg):
 
-    for i in range(self.zones_list.count()):
+    print(self.zones_list.count)
+    for i in range(len(self.zones_list)):
       self.remove_box(self.zones_list[i])
-    self.zones_list.clear()
+    del self.zones_list[:]
 
     # Adding the fixed box which protect the arm from the elevation system in steel
     self.add_box(0.0, 0.0, -0.1075, 1.0, (0.35, 0.1, 0.18), box_name="Elevation_system_steel")
@@ -457,15 +468,16 @@ class PAUL_manipulator(object):
       self.zones_list.append("Cart_low")
 
 
-    rospy.loginfo("Reaching requested Z-Pose..." + str(pose_msg))
+    rospy.loginfo("Reaching requested Z-Pose..." + str(pose_msg.pose))
     actual_pose = self.get_cartesian_pose()
-    actual_pose.position.y += pose_msg.position.y
-    actual_pose.position.z += pose_msg.position.z
+
+    actual_pose.position.y += pose_msg.pose.position.y
+    actual_pose.position.z += pose_msg.pose.position.z
     
     success = self.reach_cartesian_pose(pose=actual_pose, tolerance=0.01, constraints=None)
 
-    rospy.loginfo("Reaching requested Pose..." + str(pose_msg))
-    actual_pose.position.x += pose_msg.position.x
+    rospy.loginfo("Reaching requested Pose..." + str(pose_msg.pose))
+    actual_pose.position.x += pose_msg.pose.position.x
     
     success = self.reach_cartesian_pose(pose=actual_pose, tolerance=0.01, constraints=None)
 
@@ -481,8 +493,6 @@ class PAUL_manipulator(object):
     rospy.loginfo("Request is a " + str(success))
 
     return ArmPositionResponse(success)
-
-
 
 
 def main():
