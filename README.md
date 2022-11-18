@@ -43,7 +43,7 @@ Par la suite, vous pouvez procéder à la création et à la compilation de votr
     git clone https://github.com/pmc-paul/odrive_ros_control.git
     cd ../..
     rosdep install --from-paths src --ignore-src -y
-    sudo python3 -m pip install conan
+    pip3 install conan
     conan config set general.revisions_enabled=1
     conan profile new default --detect > /dev/null
     conan profile update settings.compiler.libcxx=libstdc++11 default
@@ -60,7 +60,7 @@ Par la suite, vous pouvez procéder à la création et à la compilation de votr
 
     ```bash
     cd ~/catkin_ws
-    catkin_make
+    catkin_make --cmake-args -DCONAN_TARGET_PLATFORM=artik710
     ```
 
 6. Upload sur l'Arduino Mega2560:
