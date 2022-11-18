@@ -60,7 +60,7 @@ Par la suite, vous pouvez procéder à la création et à la compilation de votr
 
     ```bash
     cd ~/catkin_ws
-    catkin_make --cmake-args -DCONAN_TARGET_PLATFORM=artik710
+    catkin_make --cmake-args -DCONAN_TARGET_PLATFORM=jetson
     ```
 
 6. Upload sur l'Arduino Mega2560:
