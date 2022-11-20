@@ -29,7 +29,7 @@
       <param unless="$(arg localization)" name="Mem/IncrementalMemory" type="string" value="true"/>
 
       <!-- Inputs -->
-      <remap from="odom"        to="/paul_velocity_controller/odom"/>
+      <remap from="odom"        to="/odometry/filtered"/>
       <remap from="scan"        to="/scan"/>
 
       <!-- Outputs -->
