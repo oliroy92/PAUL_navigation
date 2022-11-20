@@ -22,14 +22,15 @@
 
       <param name="queue_size"        type="int"      value="50"/>
       <param name="database_path"     type="string"   value="$(arg database_path)"/>
+      <param name="approximate_sync"  type="bool"     value="true"/>
 
       <!-- Localization Mode -->
       <param if="$(arg localization)"     name="Mem/IncrementalMemory" type="string" value="false"/>
       <param unless="$(arg localization)" name="Mem/IncrementalMemory" type="string" value="true"/>
 
       <!-- Inputs -->
-      <remap from="odom"        to="/odom"/>
-      <remap from="scan"        to="/laser_scan"/>
+      <remap from="odom"        to="/paul_velocity_controller/odom"/>
+      <remap from="scan"        to="/scan"/>
 
       <!-- Outputs -->
       <remap from="grid_map"    to="/map"/>
