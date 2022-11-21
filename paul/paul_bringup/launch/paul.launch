@@ -25,6 +25,10 @@
     <arg name="rtabmapviz" default="false"/>
     <arg name="localization" default="false"/>
 
+    <!-- Sensors parameters -->
+    <arg name="imu_serial_port" default="/dev/ttyUSB0" />
+    <arg name="lidar_serial_port" default="/dev/ttyUSB1"/>
+
     <!-- RViz parameters -->
     <arg name="rviz_config_file" default="rviz_cfg.rviz"/>
 
@@ -68,12 +72,17 @@
                 <arg name="align_depth" value="true"/>
                 <arg name="camera"      value="realsense"/>
             </include>
-        </group>
-        <include file="$(find imu)/launch/imu.launch"/>
-        <include file="$(find lidar)/launch/lidar.launch"/>
+        </group>-->
+        <include file="$(find imu)/launch/imu.launch">
+          <arg name="serial_port" value="$(arg imu_serial_port)" />
+        </include>
+        <include file="$(find lidar)/launch/lidar.launch">
+          <arg name="serial_port" value="$(arg lidar_serial_port)" />
+        </include>
+	
         <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization">
             <rosparam command="load" file="$(find paul_control)/config/localization.yaml" />
-        </node> -->
+        </node> 
 
         <!-- NOTE: localization and the base controller will be launched in control.launch -->
         <!-- TODO: replace line 74 to 80 -->

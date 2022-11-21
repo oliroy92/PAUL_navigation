@@ -12,7 +12,6 @@
   <node name="paul_controller_spawner" pkg="controller_manager" type="spawner"
     args="paul_joint_state_controller paul_elevation_controller paul_base_controller" 
     respawn="false" output="screen"/>
-
 </launch>
 
 

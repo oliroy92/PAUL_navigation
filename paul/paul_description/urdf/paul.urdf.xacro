@@ -31,7 +31,7 @@
   <xacro:property name="wheel_mass"		value="0.263"/>
   <xacro:property name="front_to_rear_wheels_x"	value="0.77"/>
   <xacro:property name="front_right_left_y"	value="0.245"/>
-  <xacro:property name="rear_right_left_y"	value="0.22938"/>
+  <xacro:property name="rear_right_left_y"	value="0.559"/>
 
   <!-- Constant for driven wheels -->
     <!-- Right wheel parameters -->
@@ -180,7 +180,7 @@
 
   <!-- Lidar sensor -->
   <xacro:lidar parent="base_link">
-    <origin xyz="0.546 0 -0.001" rpy="0 0 0" />
+    <origin xyz="0.546 0 -0.001" rpy="0 0 3.14159" />
   </xacro:lidar>
 
   <!-- D435 RGB-D Sensor -->
