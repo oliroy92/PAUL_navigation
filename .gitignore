@@ -1,1 +1,8 @@
-framework/perception/sonar/*
+framework/perception/sonar/CMakeLists.txt
+framework/perception/sonar/package.xml
+framework/perception/sonar/README.md
+framework/perception/sonar/firmware/CMakeLists.txt
+framework/perception/sonar/firmware/firmware.cpp
+framework/perception/sonar/firmware/NewPing/NewPing.cpp
+framework/perception/sonar/firmware/NewPing/NewPing.h
+framework/perception/sonar/launch/sonar.launch
