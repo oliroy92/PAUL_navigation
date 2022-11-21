@@ -56,7 +56,7 @@
     </gazebo>
 
     <!--Joint definition-->
-    <joint name="caster_${lr}_joint" type="continuous">
+    <joint name="caster_${lr}_joint" type="fixed">
       <parent link="${parent}"/>
       <child link="caster_${lr}_link"/>
       <axis xyz="0 0 1"/>
