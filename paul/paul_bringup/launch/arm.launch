@@ -245,4 +245,8 @@
     <node name="rviz" pkg="rviz" type="rviz" output="log" args="-f base_link -d $(find paul_bringup)/config/arm_cfg.rviz" if="$(arg start_rviz)"/>
     <!--include file="$(find gen3_lite_gen3_lite_2f_move_it_config)/launch/moveit_rviz.launch"/-->
   
+    <!-- Start Manipulator Node -->
+
+    <include file="$(find paul_manipulation)/launch/manipulator.launch"/>
+
 </launch>
