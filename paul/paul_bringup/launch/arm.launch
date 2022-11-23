@@ -248,6 +248,11 @@
     <!-- Start Manipulator Node -->
     <include file="$(find paul_manipulation)/launch/manipulator.launch"/>
 
+    <!-- Elevation control Nodes -->
+    <node name="elevation" pkg="paul_manipulation" type="elevation_controller_vision.py" output="screen"/>
+    <include file="$(find paul_control)/launch/control.launch"/>
+
+
     <!-- Start Kinova Camera -->
     <include file="$(find kinova_vision)/launch/kinova_vision_rgbd.launch"/>
 

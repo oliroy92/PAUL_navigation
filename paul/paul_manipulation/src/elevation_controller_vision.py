@@ -48,6 +48,7 @@ class ElevationCommandVision:
     else:
       return {"success":False, "ActualPosition":self.lastPosition}
 
+    print(cmd)
     self.pub.publish(cmd)
 
     print("Difference: ", abs(self.lastPosition - cmd.data))
@@ -59,8 +60,9 @@ class ElevationCommandVision:
       rospy.sleep(0.1)
       i += 1
       print(i)
-    
+      
     if (i >= 100):
+      self.pub.publish(self.lastPosition)
       return {"success":False, "ActualPosition":self.lastPosition}
     else:
       return {"success":True, "ActualPosition":self.lastPosition}

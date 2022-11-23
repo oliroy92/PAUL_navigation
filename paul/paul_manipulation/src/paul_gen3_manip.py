@@ -102,6 +102,7 @@ class PAUL_manipulator(object):
     # rospy.Subscriber('/arm_position_request', geometry_msgs.msg.Pose, self.request_pose_callback) 
 
     self.elevationService = rospy.Service('vision_elevation_first', ElevationVision, self.elevationPositionCallback)
+    self.armServiceGrab = rospy.Service('arm_position_grab', ArmPosition, self.armPositionGrabCallback)
     self.armService = rospy.Service('arm_position', ArmPosition, self.armPositionCallback)
 
     self.height = 0
@@ -446,9 +447,9 @@ class PAUL_manipulator(object):
   def GetHeightElevation(self, msg):
     self.height = msg.position[0]
 
-  # For moving the arm to the requested position
+  # For moving the arm to the requested position and grab the item
   # service
-  def armPositionCallback(self, pose_msg):
+  def armPositionGrabCallback(self, pose_msg):
 
     print(self.zones_list.count)
     for i in range(len(self.zones_list)):
@@ -500,6 +501,45 @@ class PAUL_manipulator(object):
     rospy.loginfo("Request is a " + str(success))
 
     return ArmPositionResponse(success)
+
+  # For moving the arm to the requested position
+  # service
+  def armPositionCallback(self, pose_msg):
+
+      print(self.zones_list.count)
+      for i in range(len(self.zones_list)):
+        self.remove_box(self.zones_list[i])
+      del self.zones_list[:]
+
+      # Adding the fixed box which protect the arm from the elevation system in steel
+      self.add_box(0.0, 0.0, -0.1075, 1.0, (0.35, 0.1, 0.18), box_name="Elevation_system_steel")
+      self.zones_list.append("Elevation_system_steel")
+
+      if self.height > 700:
+        self.add_box(0.0, 0.17, 1.02, 1.0, (0.65, 0.2, 1.35), box_name="Cart_high")
+        self.zones_list.append("Cart_high")
+      elif self.height > 300:
+        self.add_box(0.0, 0.17, 0.7225, 1.0, (0.65, 0.2, 1.35), box_name="Cart_middle")
+        self.zones_list.append("Cart_middle")
+      else:
+        self.add_box(0.0, 0.03, -0.21, 1.0, (0.65, 0.18, 0.4), box_name="Wheels")
+        self.add_box(0.0, 0.17, 0.4175, 1.0, (0.65, 0.2, 1.35), box_name="Cart_low")
+        self.zones_list.append("Wheels")
+        self.zones_list.append("Cart_low")
+
+
+      rospy.loginfo("Reaching requested Z-Pose..." + str(pose_msg.pose))
+      actual_pose = self.get_cartesian_pose()
+
+      actual_pose.position.y += pose_msg.pose.position.y
+      actual_pose.position.z += pose_msg.pose.position.z
+      actual_pose.position.x += pose_msg.pose.position.x
+      
+      success &= self.reach_cartesian_pose(pose=actual_pose, tolerance=0.01, constraints=None)
+
+      rospy.loginfo("Request is a " + str(success))
+
+      return ArmPositionResponse(success)
 
 
 def main():
