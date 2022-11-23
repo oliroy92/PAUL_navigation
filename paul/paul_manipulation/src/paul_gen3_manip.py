@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 # Software License Agreement (BSD License)
 #
@@ -99,7 +99,7 @@ class PAUL_manipulator(object):
     super(PAUL_manipulator, self).__init__()
     moveit_commander.roscpp_initialize(sys.argv)
     rospy.init_node('PAUL_manipulator')
-    rospy.Subscriber('/arm_position_request', geometry_msgs.msg.Pose, self.request_pose_callback) 
+    # rospy.Subscriber('/arm_position_request', geometry_msgs.msg.Pose, self.request_pose_callback) 
 
     self.elevationService = rospy.Service('vision_elevation_first', ElevationVision, self.elevationPositionCallback)
     self.armService = rospy.Service('arm_position', ArmPosition, self.armPositionCallback)
@@ -289,49 +289,52 @@ class PAUL_manipulator(object):
   def box_is_in_scene(self, box_name = 'box'):
     return box_name in self.scene.get_known_object_names()
 
-  def request_pose_callback(self, pose_msg):
-    rospy.loginfo("Reaching requested Z-Pose..." + str(pose_msg))
+  # def request_pose_callback(self, pose_msg):
+  #   rospy.loginfo("Reaching requested Z-Pose..." + str(pose_msg))
     
-    actual_pose = self.get_cartesian_pose()
-    print("******Actual position******")
-    print(actual_pose)
-    actual_pose.position.y += pose_msg.position.y
-    actual_pose.position.z += pose_msg.position.z
+  #   rospy.loginfo("Opening the gripper...")
+  #   self.reach_gripper_position(1)
+
+  #   actual_pose = self.get_cartesian_pose()
+  #   print("******Actual position******")
+  #   print(actual_pose)
+  #   actual_pose.position.y += pose_msg.position.y
+  #   actual_pose.position.z += pose_msg.position.z
     
-    success = self.reach_cartesian_pose(pose=actual_pose, tolerance=0.01, constraints=None)
+  #   success = self.reach_cartesian_pose(pose=actual_pose, tolerance=0.01, constraints=None)
 
 
-    rospy.loginfo("Reaching requested Pose..." + str(pose_msg))
-    actual_pose.position.x += pose_msg.position.x
+  #   rospy.loginfo("Reaching requested Pose..." + str(pose_msg))
+  #   actual_pose.position.x += pose_msg.position.x
     
-    success = self.reach_cartesian_pose(pose=actual_pose, tolerance=0.01, constraints=None)
+  #   success &= self.reach_cartesian_pose(pose=actual_pose, tolerance=0.01, constraints=None)
     
-    if success:
-      rospy.loginfo("Closing the gripper...")
-      success &= self.reach_gripper_position(0.65)
+  #   if success:
+  #     rospy.loginfo("Closing the gripper...")
+  #     success &= self.reach_gripper_position(0.65)
 
-    if success:
-      rospy.loginfo("taking article...")
-      actual_pose.position.z += 0.025
-      success = self.reach_cartesian_pose(pose=actual_pose, tolerance=0.01, constraints=None)
+  #   if success:
+  #     rospy.loginfo("taking article...")
+  #     actual_pose.position.z += 0.025
+  #     success &= self.reach_cartesian_pose(pose=actual_pose, tolerance=0.01, constraints=None)
 
-    rospy.loginfo("Request is a " + str(success))
+  #   rospy.loginfo("Request is a " + str(success))
 
-  def example_send_gripper_command(value):
-    # Initialize the request
-    # Close the gripper
-    req = SendGripperCommandRequest()
-    finger = Finger()
-    finger.finger_identifier = 0
-    finger.value = value
-    req.input.gripper.finger.append(finger)
-    req.input.mode = GripperMode.GRIPPER_FORCE
+  # def example_send_gripper_command(value):
+  #   # Initialize the request
+  #   # Close the gripper
+  #   req = SendGripperCommandRequest()
+  #   finger = Finger()
+  #   finger.finger_identifier = 0
+  #   finger.value = value
+  #   req.input.gripper.finger.append(finger)
+  #   req.input.mode = GripperMode.GRIPPER_FORCE
 
-    robot_name = rospy.get_param('~robot_name', "my_gen3_lite")
-    send_gripper_command_full_name = '/' + robot_name + '/base/send_gripper_command'
-    send_gripper_commandCallback = rospy.ServiceProxy(send_gripper_command_full_name, SendGripperCommand)
+  #   robot_name = rospy.get_param('~robot_name', "my_gen3_lite")
+  #   send_gripper_command_full_name = '/' + robot_name + '/base/send_gripper_command'
+  #   send_gripper_commandCallback = rospy.ServiceProxy(send_gripper_command_full_name, SendGripperCommand)
 
-    rospy.loginfo("Sending the gripper command...")
+  #   rospy.loginfo("Sending the gripper command...")
 
     # Call the service 
     try:
@@ -444,12 +447,16 @@ class PAUL_manipulator(object):
     self.height = msg.position[0]
 
   # For moving the arm to the requested position
+  # service
   def armPositionCallback(self, pose_msg):
 
     print(self.zones_list.count)
     for i in range(len(self.zones_list)):
       self.remove_box(self.zones_list[i])
     del self.zones_list[:]
+
+    rospy.loginfo("Opening the gripper...")
+    self.reach_gripper_position(0)
 
     # Adding the fixed box which protect the arm from the elevation system in steel
     self.add_box(0.0, 0.0, -0.1075, 1.0, (0.35, 0.1, 0.18), box_name="Elevation_system_steel")
@@ -479,16 +486,16 @@ class PAUL_manipulator(object):
     rospy.loginfo("Reaching requested Pose..." + str(pose_msg.pose))
     actual_pose.position.x += pose_msg.pose.position.x
     
-    success = self.reach_cartesian_pose(pose=actual_pose, tolerance=0.01, constraints=None)
+    success &= self.reach_cartesian_pose(pose=actual_pose, tolerance=0.01, constraints=None)
 
     if success:
       rospy.loginfo("Closing the gripper...")
-      success &= self.reach_gripper_position(0.65)
+      success &= self.reach_gripper_position(pose_msg.grip)
 
     if success:
       rospy.loginfo("taking article...")
       actual_pose.position.z += 0.025
-      success = self.reach_cartesian_pose(pose=actual_pose, tolerance=0.01, constraints=None)
+      success &= self.reach_cartesian_pose(pose=actual_pose, tolerance=0.01, constraints=None)
 
     rospy.loginfo("Request is a " + str(success))
 

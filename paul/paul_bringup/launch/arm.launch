@@ -246,7 +246,9 @@
     <!--include file="$(find gen3_lite_gen3_lite_2f_move_it_config)/launch/moveit_rviz.launch"/-->
   
     <!-- Start Manipulator Node -->
-
     <include file="$(find paul_manipulation)/launch/manipulator.launch"/>
+
+    <!-- Start Kinova Camera -->
+    <include file="$(find kinova_vision)/launch/kinova_vision_rgbd.launch"/>
 
 </launch>

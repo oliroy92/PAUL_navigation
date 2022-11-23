@@ -1,3 +1,4 @@
 geometry_msgs/Pose pose
+float64 grip
 ---
 bool success
