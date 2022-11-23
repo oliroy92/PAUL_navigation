@@ -2,7 +2,7 @@
 <launch>
   <arg name="serial_port"       default="/dev/ttyUSB0" />
   <arg name="frame_id"          default="imu_link" />
-  <arg name="operation_mode"    default="IMU"/>
+  <arg name="operation_mode"    default="NDOF"/>
   <arg name="use_magnetometer"  default="false" />
   <arg name="use_temperature"   default="false" /> 
 
