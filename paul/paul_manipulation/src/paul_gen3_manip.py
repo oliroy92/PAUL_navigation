@@ -55,7 +55,7 @@ from copy import deepcopy
 
 from std_msgs.msg import Float64
 from sensor_msgs.msg import JointState
-from paul_manipulation.srv import ArmPosition, ArmPositionResponse
+from paul_manipulation.srv import ArmPosition, ArmPositionResponse, ArmPositionJoint, ArmPositionJointResponse
 from paul_manipulation.srv import ElevationPosition, ElevationPositionResponse
 from paul_manipulation.srv import ElevationVision, ElevationVisionResponse
 
@@ -103,7 +103,7 @@ class PAUL_manipulator(object):
 
     self.elevationService = rospy.Service('vision_elevation_first', ElevationVision, self.elevationPositionCallback)
     self.armServiceGrab = rospy.Service('arm_position_grab', ArmPosition, self.armPositionGrabCallback)
-    self.armService = rospy.Service('arm_position', ArmPosition, self.armPositionCallback)
+    self.armService = rospy.Service('arm_position', ArmPositionJoint, self.armPositionCallback)
 
     self.height = 0
     self.subHeight = rospy.Subscriber("/joint_states", JointState, self.GetHeightElevation)
@@ -193,8 +193,10 @@ class PAUL_manipulator(object):
     joint_positions[3] = J4
     joint_positions[4] = J5
     joint_positions[5] = J6
+    print("joint goal: ")
+    print(joint_positions)
+
     arm_group.set_joint_value_target(joint_positions)
-    
     # Plan and execute in one command
     success &= arm_group.go(wait=True)
 
@@ -460,20 +462,20 @@ class PAUL_manipulator(object):
     self.reach_gripper_position(0)
 
     # Adding the fixed box which protect the arm from the elevation system in steel
-    self.add_box(0.0, 0.0, -0.1075, 1.0, (0.35, 0.1, 0.18), box_name="Elevation_system_steel")
-    self.zones_list.append("Elevation_system_steel")
+    # self.add_box(0.0, 0.0, -0.1075, 1.0, (0.35, 0.1, 0.18), box_name="Elevation_system_steel")
+    # self.zones_list.append("Elevation_system_steel")
 
-    if self.height > 700:
-      self.add_box(0.0, 0.17, 1.02, 1.0, (0.65, 0.2, 1.35), box_name="Cart_high")
-      self.zones_list.append("Cart_high")
-    elif self.height > 300:
-      self.add_box(0.0, 0.17, 0.7225, 1.0, (0.65, 0.2, 1.35), box_name="Cart_middle")
-      self.zones_list.append("Cart_middle")
-    else:
-      self.add_box(0.0, 0.03, -0.21, 1.0, (0.65, 0.18, 0.4), box_name="Wheels")
-      self.add_box(0.0, 0.17, 0.4175, 1.0, (0.65, 0.2, 1.35), box_name="Cart_low")
-      self.zones_list.append("Wheels")
-      self.zones_list.append("Cart_low")
+    # if self.height > 700:
+    #   self.add_box(0.0, 0.17, 1.02, 1.0, (0.65, 0.2, 1.35), box_name="Cart_high")
+    #   self.zones_list.append("Cart_high")
+    # elif self.height > 300:
+    #   self.add_box(0.0, 0.17, 0.7225, 1.0, (0.65, 0.2, 1.35), box_name="Cart_middle")
+    #   self.zones_list.append("Cart_middle")
+    # else:
+    #   self.add_box(0.0, 0.03, -0.21, 1.0, (0.65, 0.18, 0.4), box_name="Wheels")
+    #   self.add_box(0.0, 0.17, 0.4175, 1.0, (0.65, 0.2, 1.35), box_name="Cart_low")
+    #   self.zones_list.append("Wheels")
+    #   self.zones_list.append("Cart_low")
 
 
     rospy.loginfo("Reaching requested Z-Pose..." + str(pose_msg.pose))
@@ -482,7 +484,7 @@ class PAUL_manipulator(object):
     actual_pose.position.y += pose_msg.pose.position.y
     actual_pose.position.z += pose_msg.pose.position.z
     
-    success = self.reach_cartesian_pose(pose=actual_pose, tolerance=0.01, constraints=None)
+    success = self.reach_cartesian_pose(pose=actual_pose, tolerance=0.05, constraints=None) # upped tolerance, will be more precise in next step
 
     rospy.loginfo("Reaching requested Pose..." + str(pose_msg.pose))
     actual_pose.position.x += pose_msg.pose.position.x
@@ -504,7 +506,7 @@ class PAUL_manipulator(object):
 
   # For moving the arm to the requested position
   # service
-  def armPositionCallback(self, pose_msg):
+  def armPositionCallback(self, joints):
 
       print(self.zones_list.count)
       for i in range(len(self.zones_list)):
@@ -512,34 +514,26 @@ class PAUL_manipulator(object):
       del self.zones_list[:]
 
       # Adding the fixed box which protect the arm from the elevation system in steel
-      self.add_box(0.0, 0.0, -0.1075, 1.0, (0.35, 0.1, 0.18), box_name="Elevation_system_steel")
-      self.zones_list.append("Elevation_system_steel")
+      # self.add_box(0.0, 0.0, -0.1075, 1.0, (0.35, 0.1, 0.18), box_name="Elevation_system_steel")
+      # self.zones_list.append("Elevation_system_steel")
 
-      if self.height > 700:
-        self.add_box(0.0, 0.17, 1.02, 1.0, (0.65, 0.2, 1.35), box_name="Cart_high")
-        self.zones_list.append("Cart_high")
-      elif self.height > 300:
-        self.add_box(0.0, 0.17, 0.7225, 1.0, (0.65, 0.2, 1.35), box_name="Cart_middle")
-        self.zones_list.append("Cart_middle")
-      else:
-        self.add_box(0.0, 0.03, -0.21, 1.0, (0.65, 0.18, 0.4), box_name="Wheels")
-        self.add_box(0.0, 0.17, 0.4175, 1.0, (0.65, 0.2, 1.35), box_name="Cart_low")
-        self.zones_list.append("Wheels")
-        self.zones_list.append("Cart_low")
+      # if self.height > 700:
+      #   self.add_box(0.0, 0.17, 1.02, 1.0, (0.65, 0.2, 1.35), box_name="Cart_high")
+      #   self.zones_list.append("Cart_high")
+      # elif self.height > 300:
+      #   self.add_box(0.0, 0.17, 0.7225, 1.0, (0.65, 0.2, 1.35), box_name="Cart_middle")
+      #   self.zones_list.append("Cart_middle")
+      # else:
+      #   self.add_box(0.0, 0.03, -0.21, 1.0, (0.65, 0.18, 0.4), box_name="Wheels")
+      #   self.add_box(0.0, 0.17, 0.4175, 1.0, (0.65, 0.2, 1.35), box_name="Cart_low")
+      #   self.zones_list.append("Wheels")
+      #   self.zones_list.append("Cart_low")
 
-
-      rospy.loginfo("Reaching requested Z-Pose..." + str(pose_msg.pose))
-      actual_pose = self.get_cartesian_pose()
-
-      actual_pose.position.y += pose_msg.pose.position.y
-      actual_pose.position.z += pose_msg.pose.position.z
-      actual_pose.position.x += pose_msg.pose.position.x
-      
-      success &= self.reach_cartesian_pose(pose=actual_pose, tolerance=0.01, constraints=None)
+      success = self.reach_joint_angles(joints.joints[0], joints.joints[1], joints.joints[2], joints.joints[3], joints.joints[4], joints.joints[5], tolerance=0.01)
 
       rospy.loginfo("Request is a " + str(success))
 
-      return ArmPositionResponse(success)
+      return ArmPositionJointResponse(success)
 
 
 def main():
