@@ -483,22 +483,24 @@ class PAUL_manipulator(object):
 
     actual_pose.position.y += pose_msg.pose.position.y
     actual_pose.position.z += pose_msg.pose.position.z
+    actual_pose.position.x += pose_msg.pose.position.x/2
     
     success = self.reach_cartesian_pose(pose=actual_pose, tolerance=0.05, constraints=None) # upped tolerance, will be more precise in next step
 
     rospy.loginfo("Reaching requested Pose..." + str(pose_msg.pose))
-    actual_pose.position.x += pose_msg.pose.position.x
+    actual_pose.position.x += pose_msg.pose.position.x/2
     
     success &= self.reach_cartesian_pose(pose=actual_pose, tolerance=0.01, constraints=None)
 
     if success:
       rospy.loginfo("Closing the gripper...")
-      success &= self.reach_gripper_position(pose_msg.grip)
+      success_grip = self.reach_gripper_position(pose_msg.grip)
 
-    if success:
-      rospy.loginfo("taking article...")
-      actual_pose.position.z += 0.025
-      success &= self.reach_cartesian_pose(pose=actual_pose, tolerance=0.01, constraints=None)
+    # if success:
+    rospy.loginfo("taking article...")
+    actual_pose.position.z += 0.025
+    actual_pose.position.x += 0.025
+    success &= self.reach_cartesian_pose(pose=actual_pose, tolerance=0.01, constraints=None)
 
     rospy.loginfo("Request is a " + str(success))
 
