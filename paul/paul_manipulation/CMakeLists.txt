@@ -57,8 +57,9 @@ add_message_files(
 ## Generate services in the 'srv' folder
 add_service_files(
   FILES
-  ArmPosition.srv
+  ArmPositionGrab.srv
   ArmPositionJoint.srv
+  ArmPositionCartesian.srv
   ElevationPosition.srv
   ElevationVision.srv
 )

@@ -46,6 +46,7 @@ from kortex_driver.srv import *
 from kortex_driver.msg import *
 import moveit_msgs.msg
 import geometry_msgs.msg
+import numpy as np
 
 from shape_msgs.msg import MeshTriangle, Mesh, SolidPrimitive, Plane
 from math import pi, radians
@@ -53,9 +54,9 @@ from std_srvs.srv import Empty
 from tf.transformations import quaternion_from_euler
 from copy import deepcopy
 
-from std_msgs.msg import Float64
+from std_msgs.msg import Float64, Bool
 from sensor_msgs.msg import JointState
-from paul_manipulation.srv import ArmPosition, ArmPositionResponse, ArmPositionJoint, ArmPositionJointResponse
+from paul_manipulation.srv import ArmPositionGrab, ArmPositionGrabResponse, ArmPositionJoint, ArmPositionJointResponse, ArmPositionCartesian, ArmPositionCartesianResponse
 from paul_manipulation.srv import ElevationPosition, ElevationPositionResponse
 from paul_manipulation.srv import ElevationVision, ElevationVisionResponse
 
@@ -91,6 +92,9 @@ SCAN_POSE_5_LEFT  = (0, 0, pi/2, pi/4, 0, pi/2)
 BACK_POSE         = (0, 0, pi/2, pi/4, 0, pi/2)
 DROP_POSE         = (0, 0, pi/2, pi/4, 0, pi/2)
 
+DISTANCE_SHELF_X = 43.0 # barre d'acier a l'etagere
+DISTANCE_SHELF_Y =  0.0 # milieu de l'etagere vs milieu bras
+
 
 class PAUL_manipulator(object):
   """PAUL_manipulator"""
@@ -102,8 +106,9 @@ class PAUL_manipulator(object):
     # rospy.Subscriber('/arm_position_request', geometry_msgs.msg.Pose, self.request_pose_callback) 
 
     self.elevationService = rospy.Service('vision_elevation_first', ElevationVision, self.elevationPositionCallback)
-    self.armServiceGrab = rospy.Service('arm_position_grab', ArmPosition, self.armPositionGrabCallback)
-    self.armService = rospy.Service('arm_position', ArmPositionJoint, self.armPositionCallback)
+    self.armServiceGrab = rospy.Service('arm_position_grab', ArmPositionGrab, self.armPositionGrabCallback)
+    self.armService = rospy.Service('arm_position_joint', ArmPositionJoint, self.armPositionJointCallback)
+    self.armService = rospy.Service('arm_position_cartesian', ArmPositionCartesian, self.armPositionCartesianCallback)
 
     self.height = 0
     self.subHeight = rospy.Subscriber("/joint_states", JointState, self.GetHeightElevation)
@@ -392,7 +397,9 @@ class PAUL_manipulator(object):
       return ElevationVisionResponse(False)
 
     # Create the curtain for the whole cart
-    self.add_box(0.0,-0.25,0.0, 5.0, (0.7, 0.2, 1.5), box_name='Cart_curtain')
+    self.add_box(0.0, -0.18, - 44, 0.0, (0.62, 0.2, 1.31), box_name='Cart_curtain')
+    # shelf
+    self.add_box(-39.0 - DISTANCE_SHELF_X, DISTANCE_SHELF_Y, -18.5, 0.0, (36.0, 91.0, 183.0), box_name='Shelf')
 
     # Associate the good position for the scan
     if (msg.direction == "right"):
@@ -453,29 +460,24 @@ class PAUL_manipulator(object):
   # service
   def armPositionGrabCallback(self, pose_msg):
 
+    rospy.loginfo("Opening the gripper...")
+    self.reach_gripper_position(0)
+
     print(self.zones_list.count)
     for i in range(len(self.zones_list)):
       self.remove_box(self.zones_list[i])
     del self.zones_list[:]
 
-    rospy.loginfo("Opening the gripper...")
-    self.reach_gripper_position(0)
-
     # Adding the fixed box which protect the arm from the elevation system in steel
-    # self.add_box(0.0, 0.0, -0.1075, 1.0, (0.35, 0.1, 0.18), box_name="Elevation_system_steel")
-    # self.zones_list.append("Elevation_system_steel")
+    self.add_box(0.0, 0.0, -0.1075, 1.0, (0.35, 0.1, 0.18), box_name="Elevation_system_steel")
+    self.zones_list.append("Elevation_system_steel")
 
-    # if self.height > 700:
-    #   self.add_box(0.0, 0.17, 1.02, 1.0, (0.65, 0.2, 1.35), box_name="Cart_high")
-    #   self.zones_list.append("Cart_high")
-    # elif self.height > 300:
-    #   self.add_box(0.0, 0.17, 0.7225, 1.0, (0.65, 0.2, 1.35), box_name="Cart_middle")
-    #   self.zones_list.append("Cart_middle")
-    # else:
-    #   self.add_box(0.0, 0.03, -0.21, 1.0, (0.65, 0.18, 0.4), box_name="Wheels")
-    #   self.add_box(0.0, 0.17, 0.4175, 1.0, (0.65, 0.2, 1.35), box_name="Cart_low")
-    #   self.zones_list.append("Wheels")
-    #   self.zones_list.append("Cart_low")
+    # Create the curtain for the whole cart
+    self.add_box(0.0, -0.18, - 44, 0.0, (0.62, 0.2, 1.31), box_name='Cart_curtain')
+    self.zones_list.append("Cart_curtain")
+    # shelf
+    self.add_box(-82.0, 0.0, -18.5, 0.0, (36.0, 91.0, 183.0), box_name='Shelf')
+    self.zones_list.append("Shelf")
 
 
     rospy.loginfo("Reaching requested Z-Pose..." + str(pose_msg.pose))
@@ -485,9 +487,12 @@ class PAUL_manipulator(object):
     actual_pose.position.z += pose_msg.pose.position.z
     actual_pose.position.x += pose_msg.pose.position.x/2
     
-    success = self.reach_cartesian_pose(pose=actual_pose, tolerance=0.05, constraints=None) # upped tolerance, will be more precise in next step
+    success = self.reach_cartesian_pose(pose=actual_pose, tolerance=0.03, constraints=None) # upped tolerance, will be more precise in next step
 
-    rospy.loginfo("Reaching requested Pose..." + str(pose_msg.pose))
+    # remove full shelf
+    self.remove_box(self.zones_list[-1])
+
+    rospy.loginfo("Reaching Article..." + str(pose_msg.pose))
     actual_pose.position.x += pose_msg.pose.position.x/2
     
     success &= self.reach_cartesian_pose(pose=actual_pose, tolerance=0.01, constraints=None)
@@ -504,11 +509,11 @@ class PAUL_manipulator(object):
 
     rospy.loginfo("Request is a " + str(success))
 
-    return ArmPositionResponse(success)
+    return ArmPositionGrabResponse(success)
 
-  # For moving the arm to the requested position
+  # For moving the arm to the requested position in joint
   # service
-  def armPositionCallback(self, joints):
+  def armPositionJointCallback(self, joints):
 
       print(self.zones_list.count)
       for i in range(len(self.zones_list)):
@@ -516,8 +521,15 @@ class PAUL_manipulator(object):
       del self.zones_list[:]
 
       # Adding the fixed box which protect the arm from the elevation system in steel
-      # self.add_box(0.0, 0.0, -0.1075, 1.0, (0.35, 0.1, 0.18), box_name="Elevation_system_steel")
-      # self.zones_list.append("Elevation_system_steel")
+      self.add_box(0.0, 0.0, -0.1075, 1.0, (0.35, 0.1, 0.18), box_name="Elevation_system_steel")
+      self.zones_list.append("Elevation_system_steel")
+
+      # Create the curtain for the whole cart
+      self.add_box(0.0, -0.18, - 0.44, 0.0, (0.62, 0.2, 1.31), box_name='Cart_curtain')
+      self.zones_list.append("Cart_curtain")
+      # shelf
+      self.add_box(-0.92, 0.0, -0.185, 0.0, (0.360, 0.910, 1.830), box_name='Shelf')
+      self.zones_list.append("Shelf")
 
       # if self.height > 700:
       #   self.add_box(0.0, 0.17, 1.02, 1.0, (0.65, 0.2, 1.35), box_name="Cart_high")
@@ -537,6 +549,47 @@ class PAUL_manipulator(object):
 
       return ArmPositionJointResponse(success)
 
+
+  # For moving the arm to the requested position in cartesian
+  def armPositionCartesianCallback(self, pose_msg):
+      success = True
+      print(self.zones_list.count)
+      for i in range(len(self.zones_list)):
+        self.remove_box(self.zones_list[i])
+      del self.zones_list[:]
+
+      # Adding the fixed box which protect the arm from the elevation system in steel
+      self.add_box(0.0, 0.0, -0.1075, 1.0, (0.35, 0.1, 0.18), box_name="Elevation_system_steel")
+      self.zones_list.append("Elevation_system_steel")
+
+      # Create the curtain for the whole cart
+      self.add_box(0.0, -0.18, - 0.44, 0.0, (0.62, 0.2, 1.31), box_name='Cart_curtain')
+      self.zones_list.append("Cart_curtain")
+      # shelf
+      self.add_box(-0.92, 0.0, -0.185, 0.0, (0.360, 0.910, 1.830), box_name='Shelf')
+      self.zones_list.append("Shelf")
+
+      actual_pose = self.get_cartesian_pose()
+      goal_pose = geometry_msgs.msg.Pose()
+
+      goal_pose.position.y = pose_msg.pose.position.y
+      goal_pose.position.z = pose_msg.pose.position.z
+      goal_pose.position.x = pose_msg.pose.position.x
+ 
+      roll = radians(pose_msg.pose.orientation.x)
+      pitch = radians(pose_msg.pose.orientation.y)
+      yaw = radians(pose_msg.pose.orientation.z)
+
+      goal_pose.orientation.y = np.cos(roll/2) * np.sin(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.cos(pitch/2) * np.sin(yaw/2)
+      goal_pose.orientation.z = np.cos(roll/2) * np.cos(pitch/2) * np.sin(yaw/2) - np.sin(roll/2) * np.sin(pitch/2) * np.cos(yaw/2)
+      goal_pose.orientation.x = np.sin(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) - np.cos(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
+      goal_pose.orientation.w = np.cos(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
+
+      print(goal_pose)
+      success &= self.reach_cartesian_pose(pose=goal_pose, tolerance=0.01, constraints=None)
+      rospy.loginfo("Request is a " + str(success))
+
+      return ArmPositionCartesianResponse(success)
 
 def main():
     robot = PAUL_manipulator()
