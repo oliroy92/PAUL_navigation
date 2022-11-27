@@ -65,24 +65,17 @@
     <!-- ============================================== -->
 
     <group unless="$(arg sim)">
-        <!-- d435 camera -->
-        <!-- <group if="$(arg with_d435)">
-            <include file="$(find realsense2_camera)/launch/rs_camera.launch">
-                <arg name="filters" value="pointcloud"/>
-                <arg name="align_depth" value="true"/>
-                <arg name="camera"      value="realsense"/>
-            </include>
-        </group>-->
-        <include file="$(find imu)/launch/imu.launch">
+        
+        <!-- <include file="$(find imu)/launch/imu.launch">
           <arg name="serial_port" value="$(arg imu_serial_port)" />
-        </include>
+        </include> -->
         <include file="$(find lidar)/launch/lidar.launch">
           <arg name="serial_port" value="$(arg lidar_serial_port)" />
         </include>
-	
+        <!--
         <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization">
             <rosparam command="load" file="$(find paul_control)/config/localization.yaml" />
-        </node> 
+        </node>--> 
 
         <!-- NOTE: localization and the base controller will be launched in control.launch -->
         <!-- TODO: replace line 74 to 80 -->
@@ -99,6 +92,19 @@
 
     <!-- RTABMap -->
     <group if="$(arg start_rtabmap)">
+        <!-- d435 camera -->
+        <group if="$(arg with_d435)">
+            <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+                <arg name="align_depth"  value="true"/>
+                <arg name="camera"       value="realsense"/><!--
+                <arg name="color_width"  value="480"/>
+                <arg name="color_height" value="270"/>
+                <arg name="color_fps"    value="30"/>
+                <arg name="depth_width"  value="480"/>
+                <arg name="depth_height" value="270"/>
+                <arg name="depth_fps"    value="30"/>-->
+            </include>
+        </group>
         <!-- Launching move_base to move robot around -->
         <include file="$(find paul_navigation)/launch/move_base.launch"/>
         <!-- Launching rtabmap -->
