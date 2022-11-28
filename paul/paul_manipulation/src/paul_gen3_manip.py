@@ -92,8 +92,8 @@ SCAN_POSE_5_LEFT  = (0, 0, pi/2, pi/4, 0, pi/2)
 BACK_POSE         = (0, 0, pi/2, pi/4, 0, pi/2)
 DROP_POSE         = (0, 0, pi/2, pi/4, 0, pi/2)
 
-DISTANCE_SHELF_X = 43.0 # barre d'acier a l'etagere
-DISTANCE_SHELF_Y =  0.0 # milieu de l'etagere vs milieu bras
+DISTANCE_SHELF_X = 0.430 # barre d'acier a l'etagere (m)
+DISTANCE_SHELF_Y =  0.095 # milieu de l'etagere vs milieu bras (m)
 
 
 class PAUL_manipulator(object):
@@ -396,10 +396,7 @@ class PAUL_manipulator(object):
       rospy.loginfo("Shelf number is not between 1 and 5, instead: " + str(msg.shelf))
       return ElevationVisionResponse(False)
 
-    # Create the curtain for the whole cart
-    self.add_box(0.0, -0.18, - 44, 0.0, (0.62, 0.2, 1.31), box_name='Cart_curtain')
-    # shelf
-    self.add_box(-39.0 - DISTANCE_SHELF_X, DISTANCE_SHELF_Y, -18.5, 0.0, (36.0, 91.0, 183.0), box_name='Shelf')
+    self.add_all_security_zones()
 
     # Associate the good position for the scan
     if (msg.direction == "right"):
@@ -461,24 +458,12 @@ class PAUL_manipulator(object):
   def armPositionGrabCallback(self, pose_msg):
 
     rospy.loginfo("Opening the gripper...")
-    self.reach_gripper_position(0)
+    if pose_msg.grip > 0.5:
+      self.reach_gripper_position(0.2)
+    else:
+      self.reach_gripper_position(0)
 
-    print(self.zones_list.count)
-    for i in range(len(self.zones_list)):
-      self.remove_box(self.zones_list[i])
-    del self.zones_list[:]
-
-    # Adding the fixed box which protect the arm from the elevation system in steel
-    self.add_box(0.0, 0.0, -0.1075, 1.0, (0.35, 0.1, 0.18), box_name="Elevation_system_steel")
-    self.zones_list.append("Elevation_system_steel")
-
-    # Create the curtain for the whole cart
-    self.add_box(0.0, -0.18, - 44, 0.0, (0.62, 0.2, 1.31), box_name='Cart_curtain')
-    self.zones_list.append("Cart_curtain")
-    # shelf
-    self.add_box(-82.0, 0.0, -18.5, 0.0, (36.0, 91.0, 183.0), box_name='Shelf')
-    self.zones_list.append("Shelf")
-
+    self.add_all_security_zones()
 
     rospy.loginfo("Reaching requested Z-Pose..." + str(pose_msg.pose))
     actual_pose = self.get_cartesian_pose()
@@ -490,7 +475,7 @@ class PAUL_manipulator(object):
     success = self.reach_cartesian_pose(pose=actual_pose, tolerance=0.03, constraints=None) # upped tolerance, will be more precise in next step
 
     # remove full shelf
-    self.remove_box(self.zones_list[-1])
+    self.remove_box('Shelf')
 
     rospy.loginfo("Reaching Article..." + str(pose_msg.pose))
     actual_pose.position.x += pose_msg.pose.position.x/2
@@ -503,9 +488,13 @@ class PAUL_manipulator(object):
 
     # if success:
     rospy.loginfo("taking article...")
-    actual_pose.position.z += 0.025
-    actual_pose.position.x += 0.025
+    actual_pose.position.z += 0.02
+    actual_pose.position.x -= pose_msg.pose.position.x/2
     success &= self.reach_cartesian_pose(pose=actual_pose, tolerance=0.01, constraints=None)
+    actual_pose.position.x -= pose_msg.pose.position.x/2
+    success &= self.reach_cartesian_pose(pose=actual_pose, tolerance=0.01, constraints=None)
+
+    success &= self.drop_sequence()
 
     rospy.loginfo("Request is a " + str(success))
 
@@ -515,34 +504,8 @@ class PAUL_manipulator(object):
   # service
   def armPositionJointCallback(self, joints):
 
-      print(self.zones_list.count)
-      for i in range(len(self.zones_list)):
-        self.remove_box(self.zones_list[i])
-      del self.zones_list[:]
-
-      # Adding the fixed box which protect the arm from the elevation system in steel
-      self.add_box(0.0, 0.0, -0.1075, 1.0, (0.35, 0.1, 0.18), box_name="Elevation_system_steel")
-      self.zones_list.append("Elevation_system_steel")
-
-      # Create the curtain for the whole cart
-      self.add_box(0.0, -0.18, - 0.44, 0.0, (0.62, 0.2, 1.31), box_name='Cart_curtain')
-      self.zones_list.append("Cart_curtain")
-      # shelf
-      self.add_box(-0.92, 0.0, -0.185, 0.0, (0.360, 0.910, 1.830), box_name='Shelf')
-      self.zones_list.append("Shelf")
-
-      # if self.height > 700:
-      #   self.add_box(0.0, 0.17, 1.02, 1.0, (0.65, 0.2, 1.35), box_name="Cart_high")
-      #   self.zones_list.append("Cart_high")
-      # elif self.height > 300:
-      #   self.add_box(0.0, 0.17, 0.7225, 1.0, (0.65, 0.2, 1.35), box_name="Cart_middle")
-      #   self.zones_list.append("Cart_middle")
-      # else:
-      #   self.add_box(0.0, 0.03, -0.21, 1.0, (0.65, 0.18, 0.4), box_name="Wheels")
-      #   self.add_box(0.0, 0.17, 0.4175, 1.0, (0.65, 0.2, 1.35), box_name="Cart_low")
-      #   self.zones_list.append("Wheels")
-      #   self.zones_list.append("Cart_low")
-
+      self.add_all_security_zones()
+      
       success = self.reach_joint_angles(joints.joints[0], joints.joints[1], joints.joints[2], joints.joints[3], joints.joints[4], joints.joints[5], tolerance=0.01)
 
       rospy.loginfo("Request is a " + str(success))
@@ -553,21 +516,8 @@ class PAUL_manipulator(object):
   # For moving the arm to the requested position in cartesian
   def armPositionCartesianCallback(self, pose_msg):
       success = True
-      print(self.zones_list.count)
-      for i in range(len(self.zones_list)):
-        self.remove_box(self.zones_list[i])
-      del self.zones_list[:]
 
-      # Adding the fixed box which protect the arm from the elevation system in steel
-      self.add_box(0.0, 0.0, -0.1075, 1.0, (0.35, 0.1, 0.18), box_name="Elevation_system_steel")
-      self.zones_list.append("Elevation_system_steel")
-
-      # Create the curtain for the whole cart
-      self.add_box(0.0, -0.18, - 0.44, 0.0, (0.62, 0.2, 1.31), box_name='Cart_curtain')
-      self.zones_list.append("Cart_curtain")
-      # shelf
-      self.add_box(-0.92, 0.0, -0.185, 0.0, (0.360, 0.910, 1.830), box_name='Shelf')
-      self.zones_list.append("Shelf")
+      self.add_all_security_zones()
 
       actual_pose = self.get_cartesian_pose()
       goal_pose = geometry_msgs.msg.Pose()
@@ -587,9 +537,59 @@ class PAUL_manipulator(object):
 
       print(goal_pose)
       success &= self.reach_cartesian_pose(pose=goal_pose, tolerance=0.01, constraints=None)
+
       rospy.loginfo("Request is a " + str(success))
 
       return ArmPositionCartesianResponse(success)
+
+
+  def drop_sequence(self):
+      success = True
+      self.add_all_security_zones()
+
+      success = self.reach_joint_angles(radians(-(360-329.84)),radians(-(360-354.67)), radians(134.11), radians(1.55), radians(-(360-274.08)), radians(-(360-298.95)), tolerance=0.01)
+
+      success &= self.reach_joint_angles(radians(-(360-272.01)),radians(-(360-285.38)), radians(100.14), radians(21.11), radians(-(360-340.58)), radians(-(360-303.13)), tolerance=0.01)
+      
+      self.reach_gripper_position(0)
+      
+      success = self.reach_joint_angles(radians(-(360-329.84)),radians(-(360-354.67)), radians(134.11), radians(1.55), radians(-(360-274.08)), radians(-(360-298.95)), tolerance=0.01)
+
+      return success
+
+  def add_all_security_zones(self):
+      print(self.zones_list.count)
+      for i in range(len(self.zones_list)):
+        self.remove_box(self.zones_list[i])
+      del self.zones_list[:]
+
+      # Adding the fixed box which protect the arm from the elevation system in steel
+      self.add_box(0.0, 0.0, -0.1075, 1.0, (0.35, 0.1, 0.18), box_name="Elevation_system_steel")
+      self.zones_list.append("Elevation_system_steel")
+      # shelf
+      self.add_box(-0.570 - DISTANCE_SHELF_X, DISTANCE_SHELF_Y, -0.185, 0.0, (0.360, 0.910, 1.830), box_name='Shelf')
+      self.zones_list.append("Shelf")
+
+      # Create the curtain for the whole cart
+      self.add_box(0.0, -0.18, - 0.42, 0.0, (0.63, 0.17, 1.31), box_name='Cart_curtain')
+      self.zones_list.append("Cart_curtain")
+      # drop zone #34x34x34 ish
+      # bout a 90 cm du robot
+      # cart left side
+      self.add_box(0.17, -0.45, -0.57, 0.0, (0.03, 0.90, 1.05), box_name='cart_left')
+      self.zones_list.append("cart_left")
+      # cart right side
+      self.add_box(-0.17, -0.45, -0.57, 0.0, (0.03, 0.90, 1.05), box_name='cart_right')
+      self.zones_list.append("cart_right")
+      # cart back side
+      self.add_box(0.0, -0.24, -0.57, 0.0, (0.60, 0.20, 1.05), box_name='cart_back')
+      self.zones_list.append("cart_back")
+      # cart front side
+      self.add_box(0.0, -0.90, -0.57, 0.0, (0.40, 0.05, 1.05), box_name='cart_front')
+      self.zones_list.append("cart_front")
+      # cart bottom
+      self.add_box(0.0, -0.45, -41.0, 0.0, (0.50, 0.90, 0.05), box_name='cart_bottom')
+      self.zones_list.append("cart_bottom")
 
 def main():
     robot = PAUL_manipulator()
