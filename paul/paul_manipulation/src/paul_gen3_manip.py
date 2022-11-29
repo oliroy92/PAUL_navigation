@@ -92,7 +92,7 @@ SCAN_POSE_5_LEFT  = (0, 0, pi/2, pi/4, 0, pi/2)
 BACK_POSE         = (0, 0, pi/2, pi/4, 0, pi/2)
 DROP_POSE         = (0, 0, pi/2, pi/4, 0, pi/2)
 
-DISTANCE_SHELF_X = 0.430 # barre d'acier a l'etagere (m)
+DISTANCE_SHELF_X = 0.53 # barre d'acier a l'etagere (m)
 DISTANCE_SHELF_Y =  0.095 # milieu de l'etagere vs milieu bras (m)
 
 
@@ -236,7 +236,18 @@ class PAUL_manipulator(object):
 
     # Plan and execute
     rospy.loginfo("Planning and going to the Cartesian Pose")
-    return arm_group.go(wait=True)
+
+    success = arm_group.go(wait=True)
+
+    if not success and tolerance < 0.4:
+      # Set the tolerance
+      arm_group.set_goal_position_tolerance(0.4)
+      if constraints is not None:
+        arm_group.set_path_constraints(constraints)
+      arm_group.set_pose_target(pose)
+      success = arm_group.go(wait=True)
+      
+    return success
 
   def reach_cartesian_waypoints(self, waypoints, tolerance, constraints):
     arm_group = self.arm_group
@@ -472,7 +483,7 @@ class PAUL_manipulator(object):
     actual_pose.position.z += pose_msg.pose.position.z
     actual_pose.position.x += pose_msg.pose.position.x/2
     
-    success = self.reach_cartesian_pose(pose=actual_pose, tolerance=0.03, constraints=None) # upped tolerance, will be more precise in next step
+    success = self.reach_cartesian_pose(pose=actual_pose, tolerance=0.01, constraints=None) # upped tolerance, will be more precise in next step
 
     # remove full shelf
     self.remove_box('Shelf')
@@ -491,8 +502,13 @@ class PAUL_manipulator(object):
     actual_pose.position.z += 0.02
     actual_pose.position.x -= pose_msg.pose.position.x/2
     success &= self.reach_cartesian_pose(pose=actual_pose, tolerance=0.01, constraints=None)
+
     actual_pose.position.x -= pose_msg.pose.position.x/2
     success &= self.reach_cartesian_pose(pose=actual_pose, tolerance=0.01, constraints=None)
+
+    # re-add shelf but thicker to compensate for article in hand
+    self.add_box(-0.460 - DISTANCE_SHELF_X, DISTANCE_SHELF_Y, -0.185, 0.0, (0.460, 0.910, 1.830), box_name='Shelf')
+    self.zones_list.append("Shelf")
 
     success &= self.drop_sequence()
 
@@ -544,12 +560,12 @@ class PAUL_manipulator(object):
 
 
   def drop_sequence(self):
-      success = True
+
       self.add_all_security_zones()
 
-      success = self.reach_joint_angles(radians(-(360-329.84)),radians(-(360-354.67)), radians(134.11), radians(1.55), radians(-(360-274.08)), radians(-(360-298.95)), tolerance=0.01)
+      # success = self.reach_joint_angles(radians(-(360-329.84)),radians(-(360-354.67)), radians(134.11), radians(1.55), radians(-(360-274.08)), radians(-(360-298.95)), tolerance=0.01)
 
-      success &= self.reach_joint_angles(radians(-(360-272.01)),radians(-(360-285.38)), radians(100.14), radians(21.11), radians(-(360-340.58)), radians(-(360-303.13)), tolerance=0.01)
+      success = self.reach_joint_angles(radians(-(360-272.01)),radians(-(360-285.38)), radians(100.14), radians(21.11), radians(-(360-340.58)), radians(-(360-303.13)), tolerance=0.01)
       
       self.reach_gripper_position(0)
       
@@ -567,7 +583,7 @@ class PAUL_manipulator(object):
       self.add_box(0.0, 0.0, -0.1075, 1.0, (0.35, 0.1, 0.18), box_name="Elevation_system_steel")
       self.zones_list.append("Elevation_system_steel")
       # shelf
-      self.add_box(-0.570 - DISTANCE_SHELF_X, DISTANCE_SHELF_Y, -0.185, 0.0, (0.360, 0.910, 1.830), box_name='Shelf')
+      self.add_box(-0.460 - DISTANCE_SHELF_X, DISTANCE_SHELF_Y, -0.185, 0.0, (0.360, 0.910, 1.830), box_name='Shelf')
       self.zones_list.append("Shelf")
 
       # Create the curtain for the whole cart
@@ -581,6 +597,9 @@ class PAUL_manipulator(object):
       # cart right side
       self.add_box(-0.17, -0.45, -0.57, 0.0, (0.03, 0.90, 1.05), box_name='cart_right')
       self.zones_list.append("cart_right")
+      # cart right side - wider
+      self.add_box(-0.27, -0.45, -0.57, 0.0, (0.20, 0.90, 1.05), box_name='cart_right_extra')
+      self.zones_list.append("cart_right_extra")
       # cart back side
       self.add_box(0.0, -0.24, -0.57, 0.0, (0.60, 0.20, 1.05), box_name='cart_back')
       self.zones_list.append("cart_back")
@@ -588,7 +607,7 @@ class PAUL_manipulator(object):
       self.add_box(0.0, -0.90, -0.57, 0.0, (0.40, 0.05, 1.05), box_name='cart_front')
       self.zones_list.append("cart_front")
       # cart bottom
-      self.add_box(0.0, -0.45, -41.0, 0.0, (0.50, 0.90, 0.05), box_name='cart_bottom')
+      self.add_box(0.0, -0.45, -0.410, 0.0, (0.50, 0.90, 0.05), box_name='cart_bottom')
       self.zones_list.append("cart_bottom")
 
 def main():
