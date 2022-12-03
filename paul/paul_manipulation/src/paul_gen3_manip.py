@@ -541,16 +541,16 @@ class PAUL_manipulator(object):
 
       if msg.level == 1:
           if msg.searchPos == 0:
-              pose_msg.position.x = -0.13 - DISTANCE_SHELF_X
+              pose_msg.position.x = -0.12 - DISTANCE_SHELF_X
               pose_msg.position.y = -0.06 + DISTANCE_SHELF_Y
-              pose_msg.position.z = -0.203
+              pose_msg.position.z = -0.20
               pose_msg.orientation.x = -90
               pose_msg.orientation.y = -179
               pose_msg.orientation.z = 90
           if msg.searchPos == 1:
-              pose_msg.position.x = -0.12 -DISTANCE_SHELF_X
+              pose_msg.position.x = -0.11 -DISTANCE_SHELF_X
               pose_msg.position.y = 0.22 + DISTANCE_SHELF_Y
-              pose_msg.position.z = -0.216
+              pose_msg.position.z = -0.20
               pose_msg.orientation.x = -90
               pose_msg.orientation.y = -179
               pose_msg.orientation.z = 90
@@ -564,7 +564,7 @@ class PAUL_manipulator(object):
               pose_msg.orientation.z = 90
           elif msg.searchPos == 1:
               pose_msg.position.x = -0.12 - DISTANCE_SHELF_X
-              pose_msg.position.y = 0.25 + DISTANCE_SHELF_Y
+              pose_msg.position.y = 0.23 + DISTANCE_SHELF_Y
               pose_msg.position.z = 0.08
               pose_msg.orientation.x = -90
               pose_msg.orientation.y = -179
@@ -579,14 +579,14 @@ class PAUL_manipulator(object):
               pose_msg.orientation.z = 90
           elif msg.searchPos == 1:
               pose_msg.position.x = -0.08 - DISTANCE_SHELF_X
-              pose_msg.position.y = 0.17 + DISTANCE_SHELF_Y
+              pose_msg.position.y = 0.18 + DISTANCE_SHELF_Y
               pose_msg.position.z = 0.34
               pose_msg.orientation.x = -90
               pose_msg.orientation.y = -179
               pose_msg.orientation.z = 90
       elif msg.level == 4:
           if msg.searchPos == 0:
-              pose_msg.position.x = -0.10 - DISTANCE_SHELF_X
+              pose_msg.position.x = -0.08 - DISTANCE_SHELF_X
               pose_msg.position.y = -0.19 + DISTANCE_SHELF_Y
               pose_msg.position.z = 0.60
               pose_msg.orientation.x = -90
@@ -629,10 +629,10 @@ class PAUL_manipulator(object):
       self.add_all_security_zones()
 
       success = self.reach_joint_angles(radians(-(360-272.01)),radians(-(360-285.38)), radians(100.14), radians(21.11), radians(-(360-340.58)), radians(-(360-303.13)), tolerance=0.01)
+      if success:
+        self.reach_gripper_position(0)
       
-      self.reach_gripper_position(0)
-      
-      success = self.reach_joint_angles(radians(-(360-329)),radians(-(360-341.93)), radians(132.88), radians(-(360-326.03)), radians(-(360-296.1)), radians(-(360-282.45)), tolerance=0.01)
+      success &= self.reach_joint_angles(radians(-(360-329)),radians(-(360-341.93)), radians(132.88), radians(-(360-326.03)), radians(-(360-296.1)), radians(-(360-282.45)), tolerance=0.01)
 
       return success
 
@@ -657,7 +657,7 @@ class PAUL_manipulator(object):
       self.zones_list.append("Cart_curtain")
 
       # mur lol
-      self.add_box(0.0, 0.60, 0.0, 0.0, (3, 0.02, 3), box_name='table')
+      self.add_box(0.0, 0.56, 0.0, 0.0, (3, 0.02, 3), box_name='table')
       self.zones_list.append("table")
 
       # faux toit
