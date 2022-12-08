@@ -254,6 +254,7 @@
 
 
     <!-- Start Kinova Camera -->
-    <include file="$(find kinova_vision)/launch/kinova_vision_rgbd.launch"/>
+    <include file="$(find kinova_vision)/launch/kinova_vision_
+rgbd.launch"/>
 
 </launch>

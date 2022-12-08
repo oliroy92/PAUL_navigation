@@ -75,7 +75,7 @@ class PAUL_manipulator(object):
       arm_group_name = "arm"
       self.robot = moveit_commander.RobotCommander("robot_description")
       # self.scene = moveit_commander.PlanningSceneInterface()
-      print "namespace: " + str(rospy.get_namespace())
+      print("namespace: " + str(rospy.get_namespace()))
       self.scene = moveit_commander.PlanningSceneInterface(ns=rospy.get_namespace())
       self.arm_group = moveit_commander.MoveGroupCommander(arm_group_name, ns=rospy.get_namespace())
       self.planning_frame = self.arm_group.get_planning_frame()

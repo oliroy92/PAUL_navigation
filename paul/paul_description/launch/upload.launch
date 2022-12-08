@@ -35,9 +35,6 @@
         command="xacro '$(find paul_description)/urdf/paul.urdf.xacro'
         sim:=$(arg sim) arm:=$(arg arm) dof:=$(arg dof) vision:=$(arg vision) gripper:=$(arg gripper)"/>
 
-    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
-        <param name="use_gui" value="$(arg use_gui)"/>
-    </node>
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false"/>
 
 </launch>
